@@ -9,7 +9,7 @@ const SaleOff = require('../models/saleOff');
 
 router.get('/', (req, res, next) => {
     Product.find()
-        .select('_id productType store productName price saleOff specifications overviews')
+        .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName')
         .populate('saleOff', 'discount dateStart dateEnd')
@@ -26,6 +26,7 @@ router.get('/', (req, res, next) => {
                             store: doc.store,
                             productName: doc.productName,
                             price: doc.price,
+                            quantity: doc.quantity,
                             saleOff: doc.saleOff,
                             specifications: doc.specifications,
                             overviews: doc.overviews,
@@ -52,7 +53,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:productId', (req, res, next) => {
     Product.findById(req.params.productId)
-        .select('_id productType store productName price saleOff specifications overviews')
+        .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName')
         .populate('saleOff', 'discount dateStart dateEnd')
@@ -67,6 +68,7 @@ router.get('/:productId', (req, res, next) => {
                         store: doc.store,
                         productName: doc.productName,
                         price: doc.price,
+                        quantity: doc.quantity,
                         saleOff: doc.saleOff,
                         specifications: doc.specifications,
                         overviews: doc.overviews,
@@ -94,7 +96,7 @@ router.get('/store/:storeId', (req, res, next) => {
     Product.find({
             store: req.params.storeId
         })
-        .select('_id productType store productName price saleOff specifications overviews')
+        .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName')
         .populate('saleOff', 'discount dateStart dateEnd')
@@ -111,6 +113,7 @@ router.get('/store/:storeId', (req, res, next) => {
                             store: doc.store,
                             productName: doc.productName,
                             price: doc.price,
+                            quantity: doc.quantity,
                             saleOff: doc.saleOff,
                             specifications: doc.specifications,
                             overviews: doc.overviews,
@@ -139,7 +142,7 @@ router.get('/productType/:productTypeId', (req, res, next) => {
     Product.find({
             productType: req.params.productTypeId
         })
-        .select('_id productType store productName price saleOff specifications overviews')
+        .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName')
         .populate('saleOff', 'discount dateStart dateEnd')
@@ -156,6 +159,7 @@ router.get('/productType/:productTypeId', (req, res, next) => {
                             store: doc.store,
                             productName: doc.productName,
                             price: doc.price,
+                            quantity: doc.quantity,
                             saleOff: doc.saleOff,
                             specifications: doc.specifications,
                             overviews: doc.overviews,
@@ -208,6 +212,7 @@ router.post('/', (req, res, next) => {
                                 store: req.body.storeId,
                                 productName: req.body.productName,
                                 price: req.body.price,
+                                quantity: req.body.quantity,
                                 saleOff: req.body.saleOffId,
                                 specifications: req.body.specifications,
                                 overviews: req.body.overviews
@@ -224,6 +229,7 @@ router.post('/', (req, res, next) => {
                                     store: doc.store,
                                     productName: doc.productName,
                                     price: doc.price,
+                                    quantity: doc.quantity,
                                     saleOff: doc.saleOff,
                                     specifications: doc.specifications,
                                     overviews: doc.overviews,
@@ -303,6 +309,7 @@ router.delete('/:productId', (req, res, next) => {
                                 storeId: 'Store ID',
                                 productName: 'String',
                                 price: 'Number',
+                                quantity: 'Number',
                                 saleOffId: 'SaleOff ID',
                                 specifications: 'Array',
                                 overviews: 'Array'

@@ -20,6 +20,10 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+        required: true
+    },
     saleOff: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SaleOff'
