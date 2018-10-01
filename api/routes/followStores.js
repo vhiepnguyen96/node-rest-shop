@@ -184,6 +184,42 @@ router.post('/', (req, res, next) => {
         })
 });
 
+router.patch('/:followStoreId', (req, res, next) => {
+    const id = req.params.followStoreId;
+    FollowStore.findById(id)
+        .then((followStore) => {
+            if (!followStore) {
+                return res.status(404).json({
+                    message: 'Follow store not found'
+                })
+            }
+            const updateOps = {};
+            for (const ops of req.body) {
+                updateOps[ops.propName] = ops.value;
+            }
+            FollowStore.updateOne({
+                    _id: id
+                }, {
+                    $set: updateOps
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Follow store updated',
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/wishList/' + id
+                        }
+                    });
+                })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.delete('/:customerId/:storeId', (req, res, next) => {
     FollowStore.findOne({
             customer: req.params.customerId,

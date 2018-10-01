@@ -10,9 +10,9 @@ const accountSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    customer: {
+    role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'Role',
         required: true
     },
 });

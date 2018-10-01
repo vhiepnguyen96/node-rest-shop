@@ -3,12 +3,12 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Customer = require('../models/customer');
-const Role = require('../models/role');
+const Account = require('../models/account');
 
 router.get('/', (req, res, next) => {
     Customer.find()
-        .select('_id role name gender email phoneNumber')
-        .populate('role', 'roleName')
+        .select('_id account name gender email phoneNumber')
+        .populate('account', '_id username')
         .exec()
         .then(docs => {
             const response = {
@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                 customers: docs.map(doc => {
                     return {
                         customerId: doc._id,
-                        role: doc.role,
+                        account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
                         email: doc.email,
@@ -48,8 +48,8 @@ router.get('/', (req, res, next) => {
 router.get('/:customerId', (req, res, next) => {
     const id = req.params.customerId;
     Customer.findById(id)
-        .select('_id role name gender email phoneNumber')
-        .populate('role', 'roleName')
+        .select('_id account name gender email phoneNumber')
+        .populate('account', '_id username')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -57,7 +57,7 @@ router.get('/:customerId', (req, res, next) => {
                 res.status(200).json({
                     customer: {
                         customerId: doc._id,
-                        role: doc.role,
+                        account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
                         email: doc.email,
@@ -83,40 +83,50 @@ router.get('/:customerId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    Role.findById(req.body.roleId)
-        .then(role => {
-            if (!role) {
+    Account.findById(req.body.accountId)
+        .then(account => {
+            if (!account) {
                 return res.status(404).json({
-                    message: 'Role not found'
+                    message: 'Account not found'
                 })
             }
-            const customer = new Customer({
-                _id: new mongoose.Types.ObjectId(),
-                role: req.body.roleId,
-                name: req.body.name,
-                gender: req.body.gender,
-                email: req.body.email,
-                phoneNumber: req.body.phoneNumber
-            })
-            return customer.save()
-        })
-        .then(result => {
-            console.log(result);
-            res.status(201).json({
-                message: 'Customer stored',
-                createdCustomer: {
-                    customerId: result._id,
-                    role: result.role,
-                    name: result.name,
-                    gender: result.gender,
-                    email: result.email,
-                    phoneNumber: result.phoneNumber,
-                },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/customers/' + result._id
-                }
-            });
+            Customer.findOne({
+                    account: req.body.accountId
+                })
+                .then(result => {
+                    if (result) {
+                        return res.status(500).json({
+                            message: 'Account has been used'
+                        })
+                    }
+                    const customer = new Customer({
+                        _id: new mongoose.Types.ObjectId(),
+                        account: req.body.accountId,
+                        name: req.body.name,
+                        gender: req.body.gender,
+                        email: req.body.email,
+                        phoneNumber: req.body.phoneNumber
+                    })
+                    return customer.save()
+                })
+                .then(result => {
+                    console.log(result);
+                    res.status(201).json({
+                        message: 'Customer stored',
+                        createdCustomer: {
+                            customerId: result._id,
+                            account: result.account,
+                            name: result.name,
+                            gender: result.gender,
+                            email: result.email,
+                            phoneNumber: result.phoneNumber,
+                        },
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/customers/' + result._id
+                        }
+                    });
+                })
         })
         .catch(err => {
             console.log(err);
@@ -182,8 +192,7 @@ router.delete('/:customerId', (req, res, next) => {
                             type: 'POST',
                             url: 'http://localhost:3000/customers',
                             body: {
-                                customerId: 'Object ID',
-                                role: 'Role ID',
+                                accountId: 'Account ID',
                                 name: 'String',
                                 gender: 'String',
                                 email: 'String',

@@ -3,12 +3,12 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Store = require('../models/store');
-const Customer = require('../models/customer');
+const Account = require('../models/account');
 
 router.get('/', (req, res, next) => {
     Store.find()
-        .select('_id customer storeName location phoneNumber createdDate categories')
-        .populate('customer', '_id name')
+        .select('_id account storeName location phoneNumber createdDate categories')
+        .populate('account', '_id username')
         .exec()
         .then((docs) => {
             const response = {
@@ -16,10 +16,7 @@ router.get('/', (req, res, next) => {
                 stores: docs.map(doc => {
                     return {
                         storeId: doc._id,
-                        customer: {
-                            customerId: doc.customer._id,
-                            name: doc.customer.name
-                        },
+                        account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
                         phoneNumber: doc.phoneNumber,
@@ -51,8 +48,8 @@ router.get('/', (req, res, next) => {
 router.get('/:storeId', (req, res, next) => {
     const id = req.params.storeId;
     Store.findById(id)
-        .select('_id customer storeName location phoneNumber createdDate categories')
-        .populate('customer', '_id name')
+        .select('_id account storeName location phoneNumber createdDate categories')
+        .populate('account', '_id username')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -60,10 +57,7 @@ router.get('/:storeId', (req, res, next) => {
                 res.status(200).json({
                     store: {
                         storeId: doc._id,
-                        customer: {
-                            customerId: doc.customer._id,
-                            name: doc.customer.name
-                        },
+                        account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
                         phoneNumber: doc.phoneNumber,
@@ -90,16 +84,16 @@ router.get('/:storeId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    Customer.findById(req.body.customerId)
-        .then(customer => {
-            if (!customer) {
+    Account.findById(req.body.accountId)
+        .then(account => {
+            if (!account) {
                 return res.status(404).json({
-                    message: 'Customer not found'
+                    message: 'Account not found'
                 })
             }
             const store = new Store({
                 _id: new mongoose.Types.ObjectId(),
-                customer: req.body.customerId,
+                account: req.body.accountId,
                 storeName: req.body.storeName,
                 location: req.body.location,
                 phoneNumber: req.body.phoneNumber,
@@ -114,7 +108,7 @@ router.post('/', (req, res, next) => {
                 message: 'Store saved',
                 createdStore: {
                     storeId: result._id,
-                    customer: result.customer,
+                    account: result.account,
                     storeName: result.storeName,
                     location: result.location,
                     phoneNumber: result.phoneNumber,
@@ -191,11 +185,10 @@ router.delete('/:storeId', (req, res, next) => {
                             type: 'POST',
                             url: 'http://localhost:3000/stores',
                             body: {
-                                customerId: 'Customer ID',
+                                accountId: 'Customer ID',
                                 storeName: 'String',
                                 location: 'String',
                                 phoneNumber: 'String',
-                                createdDate: 'String',
                                 categories: 'Array Category'
                             }
                         }

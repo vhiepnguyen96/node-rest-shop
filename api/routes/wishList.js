@@ -178,8 +178,40 @@ router.post('/', (req, res, next) => {
         })
 });
 
-router.patch('/:customerId', (req, res, next) => {
-
+router.patch('/:wishListId', (req, res, next) => {
+    const id = req.params.wishListId;
+    WishList.findById(id)
+        .then((wishList) => {
+            if (!wishList) {
+                return res.status(404).json({
+                    message: 'Wish list not found'
+                })
+            }
+            const updateOps = {};
+            for (const ops of req.body) {
+                updateOps[ops.propName] = ops.value;
+            }
+            WishList.updateOne({
+                    _id: id
+                }, {
+                    $set: updateOps
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Wish list updated',
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/wishList/' + id
+                        }
+                    });
+                })
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
 });
 
 router.delete('/:customerId/:productId', (req, res, next) => {

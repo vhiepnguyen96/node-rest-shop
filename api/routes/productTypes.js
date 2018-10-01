@@ -56,7 +56,7 @@ router.get('/:productTypeId', (req, res, next) => {
             console.log(doc);
             if (doc) {
                 res.status(200).json({
-                    store: {
+                    productType: {
                         productTypeId: doc._id,
                         productTypeName: doc.productTypeName,
                         category: {

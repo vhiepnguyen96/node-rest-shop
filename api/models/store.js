@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const storeSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    customer: {
+    account: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'Account',
         required: true
     },
     storeName: {

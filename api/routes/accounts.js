@@ -3,12 +3,12 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Account = require('../models/account');
-const Customer = require('../models/customer');
+const Role = require('../models/role');
 
 router.get('/', (req, res, next) => {
     Account.find()
-        .select('_id username customer')
-        .populate('customer', '_id name')
+        .select('_id username role')
+        .populate('role', '_id roleName')
         .exec()
         .then((docs) => {
             const response = {
@@ -17,10 +17,7 @@ router.get('/', (req, res, next) => {
                     return {
                         accountId: doc._id,
                         username: doc.username,
-                        customer: {
-                            customerId: doc.customer._id,
-                            name: doc.customer.name
-                        },
+                        role: doc.role,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/accounts/' + doc.username
@@ -48,8 +45,8 @@ router.get('/:username', (req, res, next) => {
     Account.findOne({
             username: req.params.username
         })
-        .select('_id username password customer')
-        .populate('customer', '_id name')
+        .select('_id username password role')
+        .populate('role', '_id roleName')
         .exec()
         .then(result => {
             if (!result) {
@@ -62,10 +59,7 @@ router.get('/:username', (req, res, next) => {
                     accountId: result._id,
                     username: result.username,
                     password: result.password,
-                    customer: {
-                        customerId: result.customer._id,
-                        name: result.customer.name
-                    }
+                    role: result.role
                 },
                 request: {
                     type: 'GET',
@@ -82,18 +76,18 @@ router.get('/:username', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    Customer.findById(req.body.customerId)
-        .then(customer => {
-            if (!customer) {
+    Role.findById(req.body.roleId)
+        .then(role => {
+            if (!role) {
                 return res.status(404).json({
-                    message: 'Customer not found'
+                    message: 'Role not found'
                 })
             }
             const account = new Account({
                 _id: new mongoose.Types.ObjectId(),
                 username: req.body.username,
                 password: req.body.password,
-                customer: req.body.customerId
+                role: req.body.roleId
             });
             return account.save()
         })
@@ -105,7 +99,7 @@ router.post('/', (req, res, next) => {
                     accountId: result._id,
                     username: result.username,
                     password: result.password,
-                    customer: result.customer,
+                    role: result.role,
                 },
                 request: {
                     type: 'GET',
