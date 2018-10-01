@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const SaleOff = require('../models/saleOff');
+const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     SaleOff.find()
@@ -150,23 +151,34 @@ router.delete('/:saleId', (req, res, next) => {
                     message: 'Sale off not found'
                 })
             }
-            SaleOff.deleteOne({
-                    _id: id
+            Product.find({
+                    saleOff: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Sale off deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/salesOff',
-                            body: {
-                                discount: 'Number',
-                                dateStart: 'Date',
-                                dateEnd: 'Date'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Sale off is already used',
+                            result: docs
+                        })
+                    }
+                    SaleOff.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Sale off deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/salesOff',
+                                    body: {
+                                        discount: 'Number',
+                                        dateStart: 'Date',
+                                        dateEnd: 'Date'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

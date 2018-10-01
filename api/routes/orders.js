@@ -8,6 +8,7 @@ const Customer = require('../models/customer');
 const DeliveryPrice = require('../models/deliveryPrice');
 const PaymentMethod = require('../models/paymentMethod');
 const OrderState = require('../models/orderState');
+const OrderItem = require('../models/orderItem');
 
 router.get('/', (req, res, next) => {
     Order.find()
@@ -272,27 +273,38 @@ router.delete('/:orderId', (req, res, next) => {
                     message: 'Order not found'
                 })
             }
-            Order.deleteOne({
-                    _id: id
+            OrderItem.find({
+                    order: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Order deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/orders',
-                            body: {
-                                customerId: 'Customer ID',
-                                deliveryAddressId: 'DeliveryAddress ID',
-                                deliveryPriceId: 'DeliveryPrice ID',
-                                totalQuantity: 'Number',
-                                totalPrice: 'String',
-                                paymentMethodId: 'PaymentMethod ID',
-                                orderStateId: 'OrderState ID'
-                            }
-                        }
-                    })
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Order is already used',
+                            result: docs
+                        })
+                    }
+                    Order.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Order deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/orders',
+                                    body: {
+                                        customerId: 'Customer ID',
+                                        deliveryAddressId: 'DeliveryAddress ID',
+                                        deliveryPriceId: 'DeliveryPrice ID',
+                                        totalQuantity: 'Number',
+                                        totalPrice: 'String',
+                                        paymentMethodId: 'PaymentMethod ID',
+                                        orderStateId: 'OrderState ID'
+                                    }
+                                }
+                            })
+                        })
                 })
         }).catch((err) => {
             console.log(err);

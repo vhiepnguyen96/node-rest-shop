@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const RatingLevel = require('../models/ratingLevel');
+const ReviewStore = require('../models/reviewStore');
 
 router.get('/', (req, res, next) => {
     RatingLevel.find()
@@ -64,7 +65,9 @@ router.get('/:ratingLevelId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    RatingLevel.findOne({ratingLevel: req.body.ratingLevel})
+    RatingLevel.findOne({
+            ratingLevel: req.body.ratingLevel
+        })
         .then(rating => {
             if (rating) {
                 return res.status(404).json({
@@ -138,22 +141,33 @@ router.delete('/:ratingLevelId', (req, res, next) => {
                     message: 'Rating level not found'
                 })
             }
-            RatingLevel.deleteOne({
-                    _id: id
+            ReviewStore.find({
+                    ratingLevel: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Rating level deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/ratings',
-                            body: {
-                                ratingLevel: 'Number',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then((docs) => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Rating level is already used',
+                            result: docs
+                        })
+                    }
+                    RatingLevel.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Rating level deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/ratings',
+                                    body: {
+                                        ratingLevel: 'Number',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

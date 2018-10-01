@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const RatingStar = require('../models/ratingStar');
+const ReviewProduct = require('../models/reviewProduct');
 
 router.get('/', (req, res, next) => {
     RatingStar.find()
@@ -64,7 +65,9 @@ router.get('/:ratingStarId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    RatingStar.findOne({ratingStar: req.body.ratingStar})
+    RatingStar.findOne({
+            ratingStar: req.body.ratingStar
+        })
         .then(rating => {
             if (rating) {
                 return res.status(404).json({
@@ -138,22 +141,33 @@ router.delete('/:ratingStarId', (req, res, next) => {
                     message: 'Rating star not found'
                 })
             }
-            RatingStar.deleteOne({
-                    _id: id
+            ReviewProduct.find({
+                    ratingStar: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Rating star deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/ratingStars',
-                            body: {
-                                ratingStar: 'Number',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Rating star is already used',
+                            result: docs
+                        })
+                    }
+                    RatingStar.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Rating star deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/ratingStars',
+                                    body: {
+                                        ratingStar: 'Number',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

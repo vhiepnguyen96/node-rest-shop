@@ -7,10 +7,9 @@ const specificationTypeSchema = mongoose.Schema({
         ref: 'ProductType',
         required: true
     },
-    specificationTitle: {
-        type: Array,
-        required: true
-    }
+    specificationTitle: [{
+        title: String
+    }]
 });
 
 module.exports = mongoose.model('SpecificationType', specificationTypeSchema);

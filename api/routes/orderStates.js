@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const OrderState = require('../models/orderState');
+const Order = require('../models/order');
 
 router.get('/', (req, res, next) => {
     OrderState.find()
@@ -160,22 +161,33 @@ router.delete('/:orderStateId', (req, res, next) => {
                     message: 'Order state not found'
                 })
             }
-            OrderState.deleteOne({
-                    _id: id
+            Order.find({
+                    orderState: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Order state deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/orderStates',
-                            body: {
-                                orderStateName: 'String',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Order state is already used',
+                            result: docs
+                        })
+                    }
+                    OrderState.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Order state deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/orderStates',
+                                    body: {
+                                        orderStateName: 'String',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

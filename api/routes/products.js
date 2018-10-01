@@ -6,6 +6,7 @@ const Product = require('../models/product');
 const ProductType = require('../models/productType');
 const Store = require('../models/store');
 const SaleOff = require('../models/saleOff');
+const ProductImage = require('../models/productImage');
 
 router.get('/', (req, res, next) => {
     Product.find()

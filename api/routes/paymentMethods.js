@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const PaymentMethod = require('../models/paymentMethod');
+const Order = require('../models/order');
 
 router.get('/', (req, res, next) => {
     PaymentMethod.find()
@@ -144,22 +145,33 @@ router.delete('/:paymentMethodId', (req, res, next) => {
                     message: 'Payment method not found'
                 })
             }
-            PaymentMethod.deleteOne({
-                    _id: id
+            Order.find({
+                    paymentMethod: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Payment method deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/paymentMethods',
-                            body: {
-                                paymentMethodName: 'String',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Payment method is already used',
+                            result: docs
+                        })
+                    }
+                    PaymentMethod.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Payment method deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/paymentMethods',
+                                    body: {
+                                        paymentMethodName: 'String',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

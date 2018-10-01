@@ -23,9 +23,12 @@ const storeSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    categories: {
-        type: Array
-    }
+    categories: [{
+        category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category'
+        }
+    }]
 });
 
 module.exports = mongoose.model('Store', storeSchema);

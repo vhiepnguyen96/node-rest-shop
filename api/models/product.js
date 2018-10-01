@@ -28,13 +28,14 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SaleOff'
     },
-    specifications: {
-        type: Array,
-        required: true
-    },
-    overviews: {
-        type: Array
-    }
+    specifications: [{
+        title: String,
+        value: String
+    }],
+    overviews: [{
+        title: String,
+        value: String
+    }]
 });
 
 module.exports = mongoose.model('Product', productSchema);

@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Category = require('../models/category');
+const ProductType = require('../models/productType');
 
 router.get('/', (req, res, next) => {
     Category.find()
@@ -135,28 +136,39 @@ router.patch('/:categoryId', (req, res, next) => {
 
 router.delete('/:categoryId', (req, res, next) => {
     const id = req.params.categoryId;
-    Category.findById(id)
-        .then((category) => {
-            if (!category) {
-                return res.status(404).json({
-                    message: 'Category not found'
+    ProductType.find({
+            category: req.params.categoryId
+        })
+        .then((docs) => {
+            if (docs.length > 0) {
+                return res.status(500).json({
+                    message: 'Category is already used',
+                    result: docs
                 })
             }
-            Category.deleteOne({
-                    _id: id
-                })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Category deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/categories',
-                            body: {
-                                categoryName: 'String'
-                            }
-                        }
-                    });
+            Category.findById(id)
+                .then((category) => {
+                    if (!category) {
+                        return res.status(404).json({
+                            message: 'Category not found'
+                        })
+                    }
+                    Category.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Category deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/categories',
+                                    body: {
+                                        categoryName: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

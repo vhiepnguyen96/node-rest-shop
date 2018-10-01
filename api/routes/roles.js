@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Role = require('../models/role');
+const Customer = require('../models/customer');
 
 router.get('/', (req, res, next) => {
     Role.find()
@@ -141,22 +142,33 @@ router.delete('/:roleId', (req, res, next) => {
                     message: 'Role not found'
                 })
             }
-            Role.deleteOne({
-                    _id: id
+            Customer.find({
+                    role: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Role deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/roles',
-                            body: {
-                                roleName: 'String',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Role is already used',
+                            result: docs
+                        })
+                    }
+                    Role.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Role deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/roles',
+                                    body: {
+                                        roleName: 'String',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

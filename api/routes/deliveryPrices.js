@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const DeliveryPrice = require('../models/deliveryPrice');
+const Order = require('../models/order');
 
 router.get('/', (req, res, next) => {
     DeliveryPrice.find()
@@ -164,23 +165,34 @@ router.delete('/:deliveryPriceId', (req, res, next) => {
                     message: 'Delivery price not found'
                 })
             }
-            DeliveryPrice.deleteOne({
-                    _id: id
+            Order.find({
+                    deliveryPrice: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Delivery price deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/deliveryPrices',
-                            body: {
-                                productQuantity: 'Number',
-                                transportFee: 'String',
-                                description: 'String'
-                            }
-                        }
-                    });
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Delivery price is already used',
+                            result: docs
+                        })
+                    }
+                    DeliveryPrice.deleteOne({
+                            _id: id
+                        })
+                        .exec()
+                        .then(result => {
+                            res.status(200).json({
+                                message: 'Delivery price deleted',
+                                request: {
+                                    type: 'POST',
+                                    url: 'http://localhost:3000/deliveryPrices',
+                                    body: {
+                                        productQuantity: 'Number',
+                                        transportFee: 'String',
+                                        description: 'String'
+                                    }
+                                }
+                            });
+                        })
                 })
         }).catch((err) => {
             console.log(err);

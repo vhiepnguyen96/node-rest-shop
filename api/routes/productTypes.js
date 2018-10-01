@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const ProductType = require('../models/productType');
 const Category = require('../models/category');
+const Product = require('../models/product');
+const SpecificationType = require('../models/specificationType');
 
 router.get('/', (req, res, next) => {
     ProductType.find()
@@ -13,7 +15,7 @@ router.get('/', (req, res, next) => {
         .then((docs) => {
             const response = {
                 count: docs.length,
-                accounts: docs.map(doc => {
+                productTypes: docs.map(doc => {
                     return {
                         productTypeId: doc._id,
                         productTypeName: doc.productTypeName,
@@ -207,23 +209,44 @@ router.delete('/:productTypeId', (req, res, next) => {
                     message: 'Product type not found'
                 })
             }
-            ProductType.deleteOne({
-                    _id: id
+            Product.find({
+                    productType: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Product type deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/productTypes',
-                            body: {
-                                productTypeName: 'String',
-                                categoryId: 'Category ID'
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Product type already used'
+                        })
+                    }
+                    SpecificationType.find({
+                            productType: id
+                        })
+                        .then(docs => {
+                            if (docs.length > 0) {
+                                return res.status(500).json({
+                                    message: 'Product type already used'
+                                })
                             }
-                        }
-                    })
+                            ProductType.deleteOne({
+                                    _id: id
+                                })
+                                .exec()
+                                .then(result => {
+                                    res.status(200).json({
+                                        message: 'Product type deleted',
+                                        request: {
+                                            type: 'POST',
+                                            url: 'http://localhost:3000/productTypes',
+                                            body: {
+                                                productTypeName: 'String',
+                                                categoryId: 'Category ID'
+                                            }
+                                        }
+                                    })
+                                })
+                        })
                 })
+
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
