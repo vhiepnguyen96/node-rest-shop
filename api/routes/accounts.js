@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const Account = require('../models/account');
 const Role = require('../models/role');
+const Customer = require('../models/customer');
+const Store = require('../models/store');
 
 router.get('/', (req, res, next) => {
     Account.find()
@@ -153,34 +155,52 @@ router.patch('/:username', (req, res, next) => {
         });
 });
 
-router.delete('/:username', (req, res, next) => {
-    const username = req.params.username;
-    Account.findOne({
-            username: username
-        })
+router.delete('/:accountId', (req, res, next) => {
+    const id = req.params.accountId;
+    Account.findById(id)
         .then((account) => {
             if (!account) {
                 return res.status(404).json({
                     message: 'Account not found'
                 })
             }
-            Account.deleteOne({
-                    username: req.params.username
+            Customer.find({
+                    account: id
                 })
-                .exec()
-                .then(result => {
-                    res.status(200).json({
-                        message: 'Account deleted',
-                        request: {
-                            type: 'POST',
-                            url: 'http://localhost:3000/accounts',
-                            body: {
-                                username: 'String',
-                                password: 'String',
-                                customer: 'Customer ID'
+                .then(docs => {
+                    if (docs.length > 0) {
+                        return res.status(500).json({
+                            message: 'Account is already used',
+                        })
+                    }
+                    Store.find({
+                            account: id
+                        })
+                        .then(docs => {
+                            if (docs.length > 0) {
+                                return res.status(500).json({
+                                    message: 'Account is already used',
+                                })
                             }
-                        }
-                    })
+                            Account.deleteOne({
+                                    _id: id
+                                })
+                                .exec()
+                                .then(result => {
+                                    res.status(200).json({
+                                        message: 'Account deleted',
+                                        request: {
+                                            type: 'POST',
+                                            url: 'http://localhost:3000/accounts',
+                                            body: {
+                                                username: 'String',
+                                                password: 'String',
+                                                customer: 'Customer ID'
+                                            }
+                                        }
+                                    })
+                                })
+                        })
                 })
         }).catch((err) => {
             console.log(err);
