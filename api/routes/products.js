@@ -200,55 +200,69 @@ router.post('/', (req, res, next) => {
                             message: 'Store not found'
                         })
                     }
-                    SaleOff.findById(req.body.saleOffId)
-                        .then((result) => {
-                            if (!result) {
-                                return res.status(404).json({
-                                    message: 'Sale off not found'
-                                })
-                            }
-                            const product = new Product({
-                                _id: new mongoose.Types.ObjectId(),
-                                productType: req.body.productTypeId,
-                                store: req.body.storeId,
-                                productName: req.body.productName,
-                                price: req.body.price,
-                                quantity: req.body.quantity,
-                                saleOff: req.body.saleOffId,
-                                specifications: req.body.specifications,
-                                overviews: req.body.overviews
-                            })
-                            return product.save()
-                        })
-                        .then(doc => {
-                            console.log(doc);
-                            res.status(201).json({
-                                message: 'Product saved',
-                                createdProduct: {
-                                    productId: doc._id,
-                                    productType: doc.productType,
-                                    store: doc.store,
-                                    productName: doc.productName,
-                                    price: doc.price,
-                                    quantity: doc.quantity,
-                                    saleOff: doc.saleOff,
-                                    specifications: doc.specifications,
-                                    overviews: doc.overviews,
-                                },
-                                request: {
-                                    type: 'GET',
-                                    url: 'http://localhost:3000/products/' + doc._id
+                    if (req.body.saleOffId != null) {
+                        SaleOff.findById(req.body.saleOffId)
+                            .then((result) => {
+                                if (!result) {
+                                    return res.status(404).json({
+                                        message: 'Sale off not found'
+                                    })
                                 }
-                            });
+                                const product = new Product({
+                                    _id: new mongoose.Types.ObjectId(),
+                                    productType: req.body.productTypeId,
+                                    store: req.body.storeId,
+                                    productName: req.body.productName,
+                                    price: req.body.price,
+                                    quantity: req.body.quantity,
+                                    saleOff: req.body.saleOffId,
+                                    specifications: req.body.specifications,
+                                    overviews: req.body.overviews
+                                })
+                                return product.save()
+                            })
+                    } else {
+                        const product = new Product({
+                            _id: new mongoose.Types.ObjectId(),
+                            productType: req.body.productTypeId,
+                            store: req.body.storeId,
+                            productName: req.body.productName,
+                            price: req.body.price,
+                            quantity: req.body.quantity,
+                            specifications: req.body.specifications,
+                            overviews: req.body.overviews
                         })
+                        return product.save()
+                    }
+                })
+                .then(doc => {
+                    console.log(doc);
+                    res.status(201).json({
+                        message: 'Product saved',
+                        createdProduct: {
+                            productId: doc._id,
+                            productType: doc.productType,
+                            store: doc.store,
+                            productName: doc.productName,
+                            price: doc.price,
+                            quantity: doc.quantity,
+                            saleOff: doc.saleOff,
+                            specifications: doc.specifications,
+                            overviews: doc.overviews,
+                        },
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/products/' + doc._id
+                        }
+                    });
                 })
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
                 error: err
             })
-        });
-});
+        }); 
+})
 
 router.patch('/:productId', (req, res, next) => {
     const id = req.params.productId;

@@ -7,10 +7,9 @@ const productImageSchema = mongoose.Schema({
         ref: 'Product',
         required: true
     },
-    imageURL: {
-        type: String,
-        required: true
-    }
+    imageList: [{
+        imageURL: String
+    }]
 });
 
 module.exports = mongoose.model('ProductImage', productImageSchema);

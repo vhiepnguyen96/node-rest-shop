@@ -7,7 +7,7 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     ProductImage.find()
-        .select('_id product imageURL')
+        .select('_id product imageList')
         .exec()
         .then((docs) => {
             console.log(docs);
@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
                         return {
                             productImageId: doc._id,
                             productId: doc.product,
-                            imageURL: doc.imageURL,
+                            imageList: doc.imageList,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:3000/productImages/' + doc._id
@@ -42,7 +42,7 @@ router.get('/', (req, res, next) => {
 router.get('/:productImageId', (req, res, next) => {
     const id = req.params.productImageId;
     ProductImage.findById(id)
-        .select('_id product imageURL')
+        .select('_id product imageList')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -51,7 +51,7 @@ router.get('/:productImageId', (req, res, next) => {
                     image: {
                         productImageId: doc._id,
                         productId: doc.product,
-                        imageURL: doc.imageURL,
+                        imageList: doc.imageList,
                     },
                     request: {
                         type: 'GET',
@@ -77,7 +77,7 @@ router.get('/product/:productId', (req, res, next) => {
     ProductImage.find({
             product: id
         })
-        .select('_id product imageURL')
+        .select('_id product imageList')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -88,7 +88,7 @@ router.get('/product/:productId', (req, res, next) => {
                         return {
                             productImageId: doc._id,
                             productId: doc.product,
-                            imageURL: doc.imageURL,
+                            imageList: doc.imageList,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:3000/productImages/' + doc._id
@@ -118,27 +118,41 @@ router.post('/', (req, res, next) => {
                     message: 'Product not found'
                 })
             }
-            const productImage = new ProductImage({
-                _id: new mongoose.Types.ObjectId(),
-                product: req.body.productId,
-                imageURL: req.body.imageURL
-            })
-            return productImage.save()
-        })
-        .then(doc => {
-            console.log(doc);
-            res.status(201).json({
-                message: 'Product image saved',
-                createdProductImage: {
-                    productImageId: doc._id,
-                    productId: doc.product,
-                    imageURL: doc.imageURL,
-                },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/productImages/' + doc._id
-                }
-            });
+            ProductImage.findOne({
+                    product: req.body.productId
+                })
+                .then(result => {
+                    if (result) {
+                        return res.status(500).json({
+                            message: 'Image list of product is already',
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/productImages/' + result._id
+                            }
+                        })
+                    }
+                    const productImage = new ProductImage({
+                        _id: new mongoose.Types.ObjectId(),
+                        product: req.body.productId,
+                        imageList: req.body.imageList
+                    })
+                    return productImage.save()
+                })
+                .then(doc => {
+                    console.log(doc);
+                    res.status(201).json({
+                        message: 'Product image saved',
+                        createdProductImage: {
+                            productImageId: doc._id,
+                            productId: doc.product,
+                            imageList: doc.imageList,
+                        },
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/productImages/' + doc._id
+                        }
+                    });
+                })
         })
         .catch(err => {
             console.log(err);
