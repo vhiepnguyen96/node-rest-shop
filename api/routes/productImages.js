@@ -74,27 +74,22 @@ router.get('/:productImageId', (req, res, next) => {
 
 router.get('/product/:productId', (req, res, next) => {
     const id = req.params.productId;
-    ProductImage.find({
+    ProductImage.findOne({
             product: id
         })
         .select('_id product imageList')
         .exec()
-        .then(docs => {
-            console.log(docs);
-            if (docs.length >= 0) {
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
                 res.status(200).json({
-                    count: docs.length,
-                    images: docs.map(doc => {
-                        return {
-                            productImageId: doc._id,
-                            productId: doc.product,
-                            imageList: doc.imageList,
-                            request: {
-                                type: 'GET',
-                                url: 'http://localhost:3000/productImages/' + doc._id
-                            }
-                        }
-                    })
+                    productImageId: doc._id,
+                    productId: doc.product,
+                    imageList: doc.imageList,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/productImages/' + doc._id
+                    }
                 });
             } else {
                 res.status(404).json({
