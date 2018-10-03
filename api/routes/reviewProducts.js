@@ -263,7 +263,12 @@ router.patch('/:reviewProductId', (req, res, next) => {
                             url: 'http://localhost:3000/reviewProducts/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Review product update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -299,7 +304,12 @@ router.delete('/:reviewProductId', (req, res, next) => {
                             }
                         }
                     })
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Review product delete error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({

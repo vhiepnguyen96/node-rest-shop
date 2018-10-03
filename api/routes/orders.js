@@ -255,7 +255,12 @@ router.patch('/:orderId', (req, res, next) => {
                             url: 'http://localhost:3000/orders/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Order update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -304,7 +309,12 @@ router.delete('/:orderId', (req, res, next) => {
                                     }
                                 }
                             })
-                        })
+                        }).catch((err) => {
+                            res.status(500).json({
+                                message: 'Order delete error',
+                                error: err
+                            })
+                        });
                 })
         }).catch((err) => {
             console.log(err);

@@ -146,7 +146,12 @@ router.patch('/:username', (req, res, next) => {
                             url: 'http://localhost:3000/accounts/' + username
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Account update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -199,7 +204,12 @@ router.delete('/:accountId', (req, res, next) => {
                                             }
                                         }
                                     })
-                                })
+                                }).catch((err) => {
+                                    res.status(500).json({
+                                        message: 'Account delete error',
+                                        error: err
+                                    })
+                                });
                         })
                 })
         }).catch((err) => {

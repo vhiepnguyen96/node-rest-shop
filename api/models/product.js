@@ -26,7 +26,8 @@ const productSchema = mongoose.Schema({
     },
     saleOff: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'SaleOff'
+        ref: 'SaleOff',
+        default: null
     },
     specifications: [{
         title: String,

@@ -125,7 +125,12 @@ router.patch('/:categoryId', (req, res, next) => {
                             url: 'http://localhost:3000/categories/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Category update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -168,7 +173,12 @@ router.delete('/:categoryId', (req, res, next) => {
                                     }
                                 }
                             });
-                        })
+                        }).catch((err) => {
+                            res.status(500).json({
+                                message: 'Category delete error',
+                                error: err
+                            })
+                        });
                 })
         }).catch((err) => {
             console.log(err);

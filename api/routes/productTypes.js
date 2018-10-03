@@ -191,7 +191,12 @@ router.patch('/:productTypeId', (req, res, next) => {
                             url: 'http://localhost:3000/productTypes/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Product type update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -243,7 +248,12 @@ router.delete('/:productTypeId', (req, res, next) => {
                                             }
                                         }
                                     })
-                                })
+                                }).catch((err) => {
+                                    res.status(500).json({
+                                        message: 'Product type delete error',
+                                        error: err
+                                    })
+                                });
                         })
                 })
 

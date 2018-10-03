@@ -205,7 +205,12 @@ router.patch('/:registeredSalesId', (req, res, next) => {
                             url: 'http://localhost:3000/registeredSales/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Registered sale update error',
+                        error: err
+                    })
+                });
         })
         .catch((err) => {
             console.log(err);
@@ -243,7 +248,12 @@ router.delete('/:registeredSalesId', (req, res, next) => {
                             }
                         }
                     })
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Registered sale delete error',
+                        error: err
+                    })
+                });
         })
         .catch(err => {
             console.log(err);

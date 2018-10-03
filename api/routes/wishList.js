@@ -205,7 +205,12 @@ router.patch('/:wishListId', (req, res, next) => {
                             url: 'http://localhost:3000/wishList/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Wish list update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -242,7 +247,12 @@ router.delete('/:customerId/:productId', (req, res, next) => {
                         }
                     }
                 })
-            })
+            }).catch((err) => {
+                res.status(500).json({
+                    message: 'Wish list delete error',
+                    error: err
+                })
+            });
     }).catch((err) => {
         console.log(err);
         res.status(500).json({

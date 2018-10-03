@@ -127,7 +127,12 @@ router.patch('/:paymentMethodId', (req, res, next) => {
                             url: 'http://localhost:3000/paymentMethods/' + id
                         }
                     });
-                })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Payment method update error',
+                        error: err
+                    })
+                });
         }).catch((err) => {
             console.log(err);
             res.status(500).json({
@@ -171,7 +176,12 @@ router.delete('/:paymentMethodId', (req, res, next) => {
                                     }
                                 }
                             });
-                        })
+                        }).catch((err) => {
+                            res.status(500).json({
+                                message: 'Payment method delete error',
+                                error: err
+                            })
+                        });
                 })
         }).catch((err) => {
             console.log(err);
