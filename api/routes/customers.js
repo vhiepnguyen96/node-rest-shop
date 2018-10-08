@@ -82,6 +82,39 @@ router.get('/:customerId', (req, res, next) => {
         });
 });
 
+router.get('/account/:accountId', (req, res, next) => {
+    const id = req.params.accountId;
+    Customer.findOne({account: id})
+        .select('_id account name gender email phoneNumber')
+        .populate('account', '_id username')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    customer: {
+                        customerId: doc._id,
+                        account: doc.account,
+                        name: doc.name,
+                        gender: doc.gender,
+                        email: doc.email,
+                        phoneNumber: doc.phoneNumber,
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No vaild entry found for provided ID'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.post('/', (req, res, next) => {
     Account.findById(req.body.accountId)
         .then(account => {

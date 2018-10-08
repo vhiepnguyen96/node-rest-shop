@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
     Product.find()
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
-        .populate('store', 'storeName')
+        .populate('store', 'storeName location')
         .populate('saleOff', 'discount dateStart dateEnd')
         .exec()
         .then(docs => {
@@ -56,7 +56,7 @@ router.get('/:productId', (req, res, next) => {
     Product.findById(req.params.productId)
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
-        .populate('store', 'storeName')
+        .populate('store', 'storeName location')
         .populate('saleOff', 'discount dateStart dateEnd')
         .exec()
         .then(doc => {
@@ -99,7 +99,7 @@ router.get('/store/:storeId', (req, res, next) => {
         })
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
-        .populate('store', 'storeName')
+        .populate('store', 'storeName location')
         .populate('saleOff', 'discount dateStart dateEnd')
         .exec()
         .then(docs => {
@@ -145,7 +145,54 @@ router.get('/productType/:productTypeId', (req, res, next) => {
         })
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
-        .populate('store', 'storeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    products: docs.map(doc => {
+                        return {
+                            productId: doc._id,
+                            productType: doc.productType,
+                            store: doc.store,
+                            productName: doc.productName,
+                            price: doc.price,
+                            quantity: doc.quantity,
+                            saleOff: doc.saleOff,
+                            specifications: doc.specifications,
+                            overviews: doc.overviews,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/products/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/store/productType/:storeId/:productTypeId', (req, res, next) => {
+    Product.find({
+            store: req.params.storeId,
+            productType: req.params.productTypeId
+        })
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
         .populate('saleOff', 'discount dateStart dateEnd')
         .exec()
         .then(docs => {

@@ -9,13 +9,14 @@ router.get('/', (req, res, next) => {
     Store.find()
         .select('_id account storeName location phoneNumber createdDate categories')
         .populate('account', '_id username')
+        .populate('categories.category', 'categoryName')
         .exec()
         .then((docs) => {
             const response = {
                 count: docs.length,
                 stores: docs.map(doc => {
                     return {
-                        storeId: doc._id,
+                        storeId: doc._id,   
                         account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
@@ -50,6 +51,7 @@ router.get('/:storeId', (req, res, next) => {
     Store.findById(id)
         .select('_id account storeName location phoneNumber createdDate categories')
         .populate('account', '_id username')
+        .populate('categories.category', 'categoryName')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -63,10 +65,43 @@ router.get('/:storeId', (req, res, next) => {
                         phoneNumber: doc.phoneNumber,
                         createdDate: doc.createdDate,
                         categories: doc.categories,
-                    },
-                    request: {
-                        type: 'GET',
-                        description: 'Get all customer at: http://localhost:3000/customers'
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No vaild entry found for provided ID'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/account/:accountId', (req, res, next) => {
+    const id = req.params.accountId;
+    Store.findOne({
+            account: id
+        })
+        .select('_id account storeName location phoneNumber createdDate categories')
+        .populate('account', 'username')
+        .populate('categories.category', 'categoryName')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    store: {
+                        storeId: doc._id,
+                        account: doc.account,
+                        storeName: doc.storeName,
+                        location: doc.location,
+                        phoneNumber: doc.phoneNumber,
+                        createdDate: doc.createdDate,
+                        categories: doc.categories,
                     }
                 });
             } else {
