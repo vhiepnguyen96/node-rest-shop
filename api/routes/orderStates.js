@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     orderStates: docs.map(doc => {
                         return {
-                            orderStateId: doc._id,
+                            _id: doc._id,
                             orderStateName: doc.orderStateName,
                             description: doc.description,
                             request: {
@@ -49,7 +49,7 @@ router.get('/:orderStateId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     orderState: {
-                        orderStateId: doc._id,
+                        _id: doc._id,
                         orderStateName: doc.orderStateName,
                         description: doc.description,
                     },
@@ -97,7 +97,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Created order state successfully',
                         createdOrderState: {
-                            orderStateId: result._id,
+                            _id: result._id,
                             orderStateName: result.orderStateName,
                             description: result.description,
                             request: {

@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     paymentMethods: docs.map(doc => {
                         return {
-                            paymentMethodId: doc._id,
+                            _id: doc._id,
                             paymentMethodName: doc.paymentMethodName,
                             description: doc.description,
                             request: {
@@ -48,7 +48,7 @@ router.get('/:paymentMethodId', (req, res, next) => {
             console.log(doc);
             if (doc) {
                 res.status(200).json({
-                    paymentMethodId: doc._id,
+                    _id: doc._id,
                     paymentMethodName: doc.paymentMethodName,
                     description: doc.description,
                     request: {
@@ -82,7 +82,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Created payment method successfully',
                 createdPaymentMethod: {
-                    paymentMethodId: result._id,
+                    _id: result._id,
                     paymentMethodName: result.paymentMethodName,
                     description: result.description,
                     request: {

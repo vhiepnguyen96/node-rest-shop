@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     ratingStars: docs.map(doc => {
                         return {
-                            ratingStarId: doc._id,
+                            _id: doc._id,
                             ratingStar: doc.ratingStar,
                             description: doc.description
                         }
@@ -45,7 +45,7 @@ router.get('/:ratingStarId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     rating: {
-                        ratingStarId: doc._id,
+                        _id: doc._id,
                         ratingStar: doc.ratingStar,
                         description: doc.description,
                     }
@@ -85,7 +85,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Created rating star successfully',
                         createdRatingStar: {
-                            ratingStarId: result._id,
+                            _id: result._id,
                             ratingStar: result.ratingStar,
                             description: result.description
                         }

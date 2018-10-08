@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     followStores: docs.map(doc => {
                         return {
-                            wishListId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             product: doc.product,
                             request: {
@@ -54,7 +54,7 @@ router.get('/:wishListId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     wishList: {
-                        wishListId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         product: doc.product,
                     },
@@ -93,7 +93,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                     count: docs.length,
                     wishList: docs.map(doc => {
                         return {
-                            wishListId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             product: doc.product,
                             request: {
@@ -158,7 +158,7 @@ router.post('/', (req, res, next) => {
                             res.status(201).json({
                                 message: 'Wish list stored',
                                 createdWishList: {
-                                    followStoreId: result._id,
+                                    _id: result._id,
                                     customer: result.customer,
                                     product: result.product
                                 },

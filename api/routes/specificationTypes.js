@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     specificationTypes: docs.map(doc => {
                         return {
-                            specificationTypeId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             specificationTitle: doc.specificationTitle,
                             request: {
@@ -51,7 +51,7 @@ router.get('/:specificationTypeId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     specificationType: {
-                        specificationTypeId: doc._id,
+                        _id: doc._id,
                         productType: doc.productType,
                         specificationTitle: doc.specificationTitle
                     },
@@ -87,7 +87,7 @@ router.get('/productType/:productTypeId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     specificationType: {
-                        specificationTypeId: doc._id,
+                        _id: doc._id,
                         productType: doc.productType,
                         specificationTitle: doc.specificationTitle,
                     },
@@ -143,7 +143,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Specification type stored',
                         createdSpecificationType: {
-                            specificationTypeId: result._id,
+                            _id: result._id,
                             productType: result.productType,
                             specificationTitle: result.specificationTitle
                         },

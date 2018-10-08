@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     products: docs.map(doc => {
                         return {
-                            productId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             store: doc.store,
                             productName: doc.productName,
@@ -64,7 +64,7 @@ router.get('/:productId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     product: {
-                        productId: doc._id,
+                        _id: doc._id,
                         productType: doc.productType,
                         store: doc.store,
                         productName: doc.productName,
@@ -109,7 +109,7 @@ router.get('/store/:storeId', (req, res, next) => {
                     count: docs.length,
                     products: docs.map(doc => {
                         return {
-                            productId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             store: doc.store,
                             productName: doc.productName,
@@ -155,7 +155,7 @@ router.get('/productType/:productTypeId', (req, res, next) => {
                     count: docs.length,
                     products: docs.map(doc => {
                         return {
-                            productId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             store: doc.store,
                             productName: doc.productName,
@@ -202,7 +202,7 @@ router.get('/store/productType/:storeId/:productTypeId', (req, res, next) => {
                     count: docs.length,
                     products: docs.map(doc => {
                         return {
-                            productId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             store: doc.store,
                             productName: doc.productName,
@@ -287,7 +287,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Product saved',
                         createdProduct: {
-                            productId: doc._id,
+                            _id: doc._id,
                             productType: doc.productType,
                             store: doc.store,
                             productName: doc.productName,

@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 customers: docs.map(doc => {
                     return {
-                        customerId: doc._id,
+                        _id: doc._id,
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
@@ -56,7 +56,7 @@ router.get('/:customerId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     customer: {
-                        customerId: doc._id,
+                        _id: doc._id,
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
@@ -93,7 +93,7 @@ router.get('/account/:accountId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     customer: {
-                        customerId: doc._id,
+                        _id: doc._id,
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
@@ -147,7 +147,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Customer stored',
                         createdCustomer: {
-                            customerId: result._id,
+                            _id: result._id,
                             account: result.account,
                             name: result.name,
                             gender: result.gender,

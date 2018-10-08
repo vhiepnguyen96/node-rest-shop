@@ -4,10 +4,12 @@ const mongoose = require('mongoose');
 
 const SaleOff = require('../models/saleOff');
 const Product = require('../models/product');
+const Store = require('../models/store');
 
 router.get('/', (req, res, next) => {
     SaleOff.find()
-        .select('_id discount dateStart dateEnd')
+        .select('_id store discount dateStart dateEnd')
+        .populate('store', '_id storeName')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -16,7 +18,8 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     saleOffs: docs.map(doc => {
                         return {
-                            saleId: doc._id,
+                            _id: doc._id,
+                            store: doc.store,
                             discount: doc.discount,
                             dateStart: doc.dateStart,
                             dateEnd: doc.dateEnd,
@@ -43,14 +46,16 @@ router.get('/', (req, res, next) => {
 
 router.get('/:saleId', (req, res, next) => {
     SaleOff.findById(req.params.saleId)
-        .select('_id discount dateStart dateEnd')
+        .select('_id store discount dateStart dateEnd')
+        .populate('store', '_id storeName')
         .exec()
         .then(doc => {
             console.log(doc);
             if (doc) {
                 res.status(200).json({
                     saleOff: {
-                        saleId: doc._id,
+                        _id: doc._id,
+                        store: doc.store,
                         discount: doc.discount,
                         dateStart: doc.dateStart,
                         dateEnd: doc.dateEnd,
@@ -75,28 +80,45 @@ router.get('/:saleId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    const saleOff = new SaleOff({
-        _id: new mongoose.Types.ObjectId(),
-        discount: req.body.discount,
-        dateStart: req.body.dateStart,
-        dateEnd: req.body.dateEnd
-    });
-    saleOff.save()
-        .then((result) => {
-            console.log(result);
-            res.status(201).json({
-                message: 'Created sale off successfully',
-                createdSaleOff: {
-                    saleId: result._id,
-                    discount: result.discount,
-                    dateStart: result.dateStart,
-                    dateEnd: result.dateEnd,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/salesOff/' + result._id
-                    }
-                }
+    Store.findById(req.body.storeId)
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    message: 'Store not found'
+                })
+            }
+            const saleOff = new SaleOff({
+                _id: new mongoose.Types.ObjectId(),
+                store: req.body.storeId,
+                discount: req.body.discount,
+                dateStart: req.body.dateStart,
+                dateEnd: req.body.dateEnd
             });
+            saleOff.save()
+                .then((result) => {
+                    console.log(result);
+                    res.status(201).json({
+                        message: 'Created sale off successfully',
+                        createdSaleOff: {
+                            _id: result._id,
+                            store: doc.store,
+                            discount: result.discount,
+                            dateStart: result.dateStart,
+                            dateEnd: result.dateEnd,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/salesOff/' + result._id
+                            }
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({
+                        message: 'Error create sale off',
+                        error: err
+                    })
+                });
         })
         .catch((err) => {
             console.log(err);

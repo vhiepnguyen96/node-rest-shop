@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     categories: docs.map(doc => {
                         return {
-                            categoryId: doc._id,
+                            _id: doc._id,
                             categoryName: doc.categoryName,
                             request: {
                                 type: 'GET',
@@ -48,7 +48,7 @@ router.get('/:categoryId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     category: {
-                        categoryId: doc._id,
+                        _id: doc._id,
                         categoryName: doc.categoryName,
                     },
                     request: {
@@ -81,7 +81,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Created category successfully',
                 createdCategory: {
-                    categoryId: result._id,
+                    _id: result._id,
                     categoryName: result.categoryName,
                     request: {
                         type: 'GET',

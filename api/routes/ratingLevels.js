@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     ratingLevels: docs.map(doc => {
                         return {
-                            ratingLevelId: doc._id,
+                            _id: doc._id,
                             ratingLevel: doc.ratingLevel,
                             description: doc.description
                         }
@@ -45,7 +45,7 @@ router.get('/:ratingLevelId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     rating: {
-                        ratingLevelId: doc._id,
+                        _id: doc._id,
                         ratingLevel: doc.ratingLevel,
                         description: doc.description,
                     }
@@ -85,7 +85,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Created rating level successfully',
                         createdRatingLevel: {
-                            ratingLevelId: result._id,
+                            _id: result._id,
                             ratingLevel: result.ratingLevel,
                             description: result.description
                         }

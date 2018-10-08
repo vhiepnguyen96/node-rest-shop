@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     reviewStores: docs.map(doc => {
                         return {
-                            reviewProductId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             product: doc.product,
                             ratingStar: doc.ratingStar,
@@ -60,7 +60,7 @@ router.get('/:reviewProductId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     reviewProduct: {
-                        reviewProductId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         product: doc.product,
                         ratingStar: doc.ratingStar,
@@ -109,7 +109,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                         count: docs.length,
                         reviewProducts: docs.map(doc => {
                             return {
-                                reviewProductId: doc._id,
+                                _id: doc._id,
                                 customer: doc.customer,
                                 product: doc.product,
                                 ratingStar: doc.ratingStar,
@@ -154,7 +154,7 @@ router.get('/product/:productId', (req, res, next) => {
                         count: docs.length,
                         reviewProducts: docs.map(doc => {
                             return {
-                                reviewProductId: doc._id,
+                                _id: doc._id,
                                 customer: doc.customer,
                                 product: doc.product,
                                 ratingStar: doc.ratingStar,
@@ -213,7 +213,7 @@ router.post('/', (req, res, next) => {
                             res.status(201).json({
                                 message: 'Review product saved',
                                 createdReviewProduct: {
-                                    reviewProductId: result._id,
+                                    _id: result._id,
                                     customer: result.customer,
                                     product: result.product,
                                     ratingStar: result.ratingStar,

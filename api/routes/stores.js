@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 stores: docs.map(doc => {
                     return {
-                        storeId: doc._id,   
+                        _id: doc._id,   
                         account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
@@ -58,7 +58,7 @@ router.get('/:storeId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     store: {
-                        storeId: doc._id,
+                        _id: doc._id,
                         account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
@@ -95,7 +95,7 @@ router.get('/account/:accountId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     store: {
-                        storeId: doc._id,
+                        _id: doc._id,
                         account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
@@ -142,7 +142,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Store saved',
                 createdStore: {
-                    storeId: result._id,
+                    _id: result._id,
                     account: result.account,
                     storeName: result.storeName,
                     location: result.location,

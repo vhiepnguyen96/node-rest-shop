@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 accounts: docs.map(doc => {
                     return {
-                        accountId: doc._id,
+                        _id: doc._id,
                         username: doc.username,
                         role: doc.role,
                         request: {
@@ -58,7 +58,7 @@ router.get('/:username', (req, res, next) => {
             }
             res.status(200).json({
                 account: {
-                    accountId: result._id,
+                    _id: result._id,
                     username: result.username,
                     password: result.password,
                     role: result.role
@@ -98,7 +98,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Created account successfully',
                 createdAccount: {
-                    accountId: result._id,
+                    _id: result._id,
                     username: result.username,
                     password: result.password,
                     role: result.role,

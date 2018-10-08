@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 productTypes: docs.map(doc => {
                     return {
-                        productTypeId: doc._id,
+                        _id: doc._id,
                         productTypeName: doc.productTypeName,
                         category: {
                             categoryId: doc.category._id,
@@ -57,7 +57,7 @@ router.get('/:productTypeId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     productType: {
-                        productTypeId: doc._id,
+                        _id: doc._id,
                         productTypeName: doc.productTypeName,
                         category: {
                             categoryId: doc.category._id,
@@ -104,7 +104,7 @@ router.get('/category/:categoryId', (req, res, next) => {
                         count: docs.length,
                         productTypes: docs.map(doc => {
                             return {
-                                productTypeId: doc._id,
+                                _id: doc._id,
                                 productTypeName: doc.productTypeName,
                                 category: {
                                     categoryId: doc.category._id,
@@ -145,8 +145,8 @@ router.post('/', (req, res, next) => {
             console.log(result);
             res.status(201).json({
                 message: 'Product type saved',
-                createdStore: {
-                    productTypeId: result._id,
+                createdProductType: {
+                    _id: result._id,
                     productTypeName: result.productTypeName,
                     category: result.category
                 },

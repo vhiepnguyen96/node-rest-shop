@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 deliveryAddresses: docs.map(doc => {
                     return {
-                        deliveryAddressId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         presentation: doc.presentation,
                         phoneNumber: doc.phoneNumber,
@@ -55,7 +55,7 @@ router.get('/:deliveryAddressId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     deliveryAddress: {
-                        deliveryAddressId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         presentation: doc.presentation,
                         phoneNumber: doc.phoneNumber,
@@ -92,7 +92,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                 count: docs.length,
                 deliveryAddresses: docs.map(doc => {
                     return {
-                        deliveryAddressId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         presentation: doc.presentation,
                         phoneNumber: doc.phoneNumber,
@@ -143,7 +143,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Delivery address stored',
                 createdDeliveryAddress: {
-                    deliveryAddressId: result._id,
+                    _id: result._id,
                     customer: result.customer,
                     presentation: result.presentation,
                     phoneNumber: result.phoneNumber,

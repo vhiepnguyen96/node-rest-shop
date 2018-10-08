@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     deliveryPrices: docs.map(doc => {
                         return {
-                            deliveryPriceId: doc._id,
+                            _id: doc._id,
                             productQuantity: doc.productQuantity,
                             transportFee: doc.transportFee,
                             description: doc.description,
@@ -50,7 +50,7 @@ router.get('/:deliveryPriceId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     category: {
-                        deliveryPriceId: doc._id,
+                        _id: doc._id,
                         productQuantity: doc.productQuantity,
                         transportFee: doc.transportFee,
                         description: doc.description,
@@ -100,7 +100,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Created delivery price successfully',
                         createdDeliveryPrice: {
-                            deliveryPriceId: result._id,
+                            _id: result._id,
                             productQuantity: result.productQuantity,
                             transportFee: result.transportFee,
                             description: result.description,

@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 registeredSales: docs.map(doc => {
                     return {
-                        registeredSalesId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         storeName: doc.storeName,
                         address: doc.address,
@@ -58,7 +58,7 @@ router.get('/:registeredSalesId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     registeredSale: {
-                        registeredSalesId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         storeName: doc.storeName,
                         address: doc.address,
@@ -98,7 +98,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                 count: docs.length,
                 registeredSales: docs.map(doc => {
                     return {
-                        registeredSalesId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         storeName: doc.storeName,
                         address: doc.address,
@@ -155,7 +155,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Registered sale stored',
                 createdRegisteredSale: {
-                    registeredSalesId: result._id,
+                    _id: result._id,
                     customer: result.customer,
                     storeName: result.storeName,
                     address: result.address,

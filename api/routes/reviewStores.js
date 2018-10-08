@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     reviewStores: docs.map(doc => {
                         return {
-                            reviewStoreId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             store: doc.store,
                             ratingLevel: doc.ratingLevel,
@@ -60,7 +60,7 @@ router.get('/:reviewStoreId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     reviewStore: {
-                        reviewStoreId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         store: doc.store,
                         ratingLevel: doc.ratingLevel,
@@ -109,7 +109,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                         count: docs.length,
                         reviewStores: docs.map(doc => {
                             return {
-                                reviewStoreId: doc._id,
+                                _id: doc._id,
                                 customer: doc.customer,
                                 store: doc.store,
                                 ratingLevel: doc.ratingLevel,
@@ -154,7 +154,7 @@ router.get('/store/:storeId', (req, res, next) => {
                         count: docs.length,
                         reviewStores: docs.map(doc => {
                             return {
-                                reviewStoreId: doc._id,
+                                _id: doc._id,
                                 customer: doc.customer,
                                 store: doc.store,
                                 ratingLevel: doc.ratingLevel,
@@ -213,7 +213,7 @@ router.post('/', (req, res, next) => {
                             res.status(201).json({
                                 message: 'Review store saved',
                                 createdReview: {
-                                    reviewStoreId: result._id,
+                                    _id: result._id,
                                     customer: result.customer,
                                     store: result.store,
                                     ratingLevel: result.ratingLevel,

@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     images: docs.map(doc => {
                         return {
-                            productImageId: doc._id,
+                            _id: doc._id,
                             productId: doc.product,
                             imageList: doc.imageList,
                             request: {
@@ -49,7 +49,7 @@ router.get('/:productImageId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     image: {
-                        productImageId: doc._id,
+                        _id: doc._id,
                         productId: doc.product,
                         imageList: doc.imageList,
                     },
@@ -83,7 +83,7 @@ router.get('/product/:productId', (req, res, next) => {
             console.log(doc);
             if (doc) {
                 res.status(200).json({
-                    productImageId: doc._id,
+                    _id: doc._id,
                     productId: doc.product,
                     imageList: doc.imageList,
                     request: {
@@ -138,7 +138,7 @@ router.post('/', (req, res, next) => {
                     res.status(201).json({
                         message: 'Product image saved',
                         createdProductImage: {
-                            productImageId: doc._id,
+                            _id: doc._id,
                             productId: doc.product,
                             imageList: doc.imageList,
                         },

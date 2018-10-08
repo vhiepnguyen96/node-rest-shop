@@ -13,7 +13,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 roles: docs.map(doc => {
                     return {
-                        roleId: doc._id,
+                        _id: doc._id,
                         roleName: doc.roleName,
                         description: doc.description,
                         request: {
@@ -49,7 +49,7 @@ router.get('/:roleId', (req, res, next) => {
             }
             res.status(200).json({
                 role: {
-                    roleId: result._id,
+                    _id: result._id,
                     roleName: result.roleName,
                     description: result.description
                 },
@@ -79,7 +79,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json({
                 message: 'Created role successfully',
                 createdRole: {
-                    roleId: result._id,
+                    _id: result._id,
                     roleName: result.roleName,
                     description: result.description,
                     request: {

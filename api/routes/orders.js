@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     orders: docs.map(doc => {
                         return {
-                            orderId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             deliveryAddress: doc.deliveryAddress,
                             deliveryPrice: doc.deliveryPrice,
@@ -70,7 +70,7 @@ router.get('/:orderId', (req, res, next) => {
             if (doc) {
                 res.status(200).json({
                     product: {
-                        orderId: doc._id,
+                        _id: doc._id,
                         customer: doc.customer,
                         deliveryAddress: doc.deliveryAddress,
                         deliveryPrice: doc.deliveryPrice,
@@ -117,7 +117,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                     count: docs.length,
                     orders: docs.map(doc => {
                         return {
-                            orderId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             deliveryAddress: doc.deliveryAddress,
                             deliveryPrice: doc.deliveryPrice,
@@ -201,7 +201,7 @@ router.post('/', (req, res, next) => {
                                             res.status(201).json({
                                                 message: 'Order saved',
                                                 createdOrder: {
-                                                    orderId: doc._id,
+                                                    _id: doc._id,
                                                     customer: doc.customer,
                                                     deliveryAddress: doc.deliveryAddress,
                                                     deliveryPrice: doc.deliveryPrice,

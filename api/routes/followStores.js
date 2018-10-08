@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
                     count: docs.length,
                     followStores: docs.map(doc => {
                         return {
-                            followId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             store: doc.store,
                             request: {
@@ -59,7 +59,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                     count: docs.length,
                     followStores: docs.map(doc => {
                         return {
-                            followId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             store: doc.store,
                             request: {
@@ -99,7 +99,7 @@ router.get('/store/:storeId', (req, res, next) => {
                     count: docs.length,
                     followStores: docs.map(doc => {
                         return {
-                            followId: doc._id,
+                            _id: doc._id,
                             customer: doc.customer,
                             store: doc.store,
                             request: {
@@ -164,7 +164,7 @@ router.post('/', (req, res, next) => {
                             res.status(201).json({
                                 message: 'Follow store stored',
                                 createdFollow: {
-                                    followStoreId: result._id,
+                                    _id: result._id,
                                     customer: result.customer,
                                     store: result.store
                                 },
