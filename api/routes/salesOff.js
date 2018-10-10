@@ -79,6 +79,44 @@ router.get('/:saleId', (req, res, next) => {
         });
 });
 
+router.get('/store/:storeId', (req, res, next) => {
+    SaleOff.find({store: req.params.storeId})
+        .select('_id store discount dateStart dateEnd')
+        .populate('store', '_id storeName')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    saleOffs: docs.map(doc => {
+                        return {
+                            _id: doc._id,
+                            store: doc.store,
+                            discount: doc.discount,
+                            dateStart: doc.dateStart,
+                            dateEnd: doc.dateEnd,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/salesOff/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
+});
+
 router.post('/', (req, res, next) => {
     Store.findById(req.body.storeId)
         .then(result => {
