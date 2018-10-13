@@ -279,6 +279,52 @@ router.get('/store/productType/:storeId/:productTypeId', (req, res, next) => {
         });
 });
 
+router.get('/saleOff/:saleOffId', (req, res, next) => {
+    Product.find({
+            saleOff: req.params.saleOffId
+        })
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    products: docs.map(doc => {
+                        return {
+                            _id: doc._id,
+                            productType: doc.productType,
+                            store: doc.store,
+                            productName: doc.productName,
+                            price: doc.price,
+                            quantity: doc.quantity,
+                            saleOff: doc.saleOff,
+                            specifications: doc.specifications,
+                            overviews: doc.overviews,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/products/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.post('/', (req, res, next) => {
     ProductType.findById(req.body.productTypeId)
         .then((result) => {

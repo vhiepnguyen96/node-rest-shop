@@ -7,7 +7,7 @@ const Account = require('../models/account');
 
 router.get('/', (req, res, next) => {
     Customer.find()
-        .select('_id account name gender email phoneNumber')
+        .select('_id account name gender birthday email phoneNumber')
         .populate('account', '_id username')
         .exec()
         .then(docs => {
@@ -19,6 +19,7 @@ router.get('/', (req, res, next) => {
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
+                        birthday: doc.birthday,
                         email: doc.email,
                         phoneNumber: doc.phoneNumber,
                         request: {
@@ -48,7 +49,7 @@ router.get('/', (req, res, next) => {
 router.get('/:customerId', (req, res, next) => {
     const id = req.params.customerId;
     Customer.findById(id)
-        .select('_id account name gender email phoneNumber')
+        .select('_id account name gender birthday email phoneNumber')
         .populate('account', '_id username')
         .exec()
         .then(doc => {
@@ -60,6 +61,7 @@ router.get('/:customerId', (req, res, next) => {
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
+                        birthday: doc.birthday,
                         email: doc.email,
                         phoneNumber: doc.phoneNumber,
                     },
@@ -85,7 +87,7 @@ router.get('/:customerId', (req, res, next) => {
 router.get('/account/:accountId', (req, res, next) => {
     const id = req.params.accountId;
     Customer.findOne({account: id})
-        .select('_id account name gender email phoneNumber')
+        .select('_id account name gender birthday email phoneNumber')
         .populate('account', '_id username')
         .exec()
         .then(doc => {
@@ -97,6 +99,7 @@ router.get('/account/:accountId', (req, res, next) => {
                         account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
+                        birthday: doc.birthday,
                         email: doc.email,
                         phoneNumber: doc.phoneNumber,
                     }
@@ -137,6 +140,7 @@ router.post('/', (req, res, next) => {
                         account: req.body.accountId,
                         name: req.body.name,
                         gender: req.body.gender,
+                        birthday: req.body.birthday,
                         email: req.body.email,
                         phoneNumber: req.body.phoneNumber
                     })
@@ -151,6 +155,7 @@ router.post('/', (req, res, next) => {
                             account: result.account,
                             name: result.name,
                             gender: result.gender,
+                            birthday: result.birthday,
                             email: result.email,
                             phoneNumber: result.phoneNumber,
                         },

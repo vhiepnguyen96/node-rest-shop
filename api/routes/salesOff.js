@@ -132,35 +132,29 @@ router.post('/', (req, res, next) => {
                 dateStart: req.body.dateStart,
                 dateEnd: req.body.dateEnd
             });
-            saleOff.save()
-                .then((result) => {
-                    console.log(result);
-                    res.status(201).json({
-                        message: 'Created sale off successfully',
-                        createdSaleOff: {
-                            _id: result._id,
-                            store: doc.store,
-                            discount: result.discount,
-                            dateStart: result.dateStart,
-                            dateEnd: result.dateEnd,
-                            request: {
-                                type: 'GET',
-                                url: 'http://localhost:3000/salesOff/' + result._id
-                            }
-                        }
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(500).json({
-                        message: 'Error create sale off',
-                        error: err
-                    })
-                });
+            return saleOff.save()
+        })
+        .then((result) => {
+            console.log(result);
+            res.status(201).json({
+                message: 'Created sale off successfully',
+                createdSaleOff: {
+                    _id: result._id,
+                    store: result.store,
+                    discount: result.discount,
+                    dateStart: result.dateStart,
+                    dateEnd: result.dateEnd,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:3000/salesOff/' + result._id
+                    }
+                }
+            });
         })
         .catch((err) => {
             console.log(err);
             res.status(500).json({
+                message: 'Error create sale off',
                 error: err
             })
         });

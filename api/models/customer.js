@@ -15,6 +15,9 @@ const customerSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    birthday:{
+        type: Date
+    },
     email: {
         type: String,
         required: true
