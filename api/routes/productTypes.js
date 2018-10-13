@@ -9,7 +9,7 @@ const SpecificationType = require('../models/specificationType');
 
 router.get('/', (req, res, next) => {
     ProductType.find()
-        .select('_id productTypeName category')
+        .select('_id productTypeName imageURL category')
         .populate('category', '_id categoryName')
         .exec()
         .then((docs) => {
@@ -19,10 +19,8 @@ router.get('/', (req, res, next) => {
                     return {
                         _id: doc._id,
                         productTypeName: doc.productTypeName,
-                        category: {
-                            categoryId: doc.category._id,
-                            categoryName: doc.category.categoryName
-                        },
+                        imageURL: result.imageURL,
+                        category: doc.category,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/productTypes/' + doc._id
@@ -49,7 +47,7 @@ router.get('/', (req, res, next) => {
 router.get('/:productTypeId', (req, res, next) => {
     const id = req.params.productTypeId;
     ProductType.findById(id)
-        .select('_id productTypeName category')
+        .select('_id productTypeName imageURL category')
         .populate('category', '_id categoryName')
         .exec()
         .then(doc => {
@@ -59,10 +57,8 @@ router.get('/:productTypeId', (req, res, next) => {
                     productType: {
                         _id: doc._id,
                         productTypeName: doc.productTypeName,
-                        category: {
-                            categoryId: doc.category._id,
-                            categoryName: doc.category.categoryName
-                        },
+                        imageURL: result.imageURL,
+                        category: doc.category
                     },
                     request: {
                         type: 'GET',
@@ -95,7 +91,7 @@ router.get('/category/:categoryId', (req, res, next) => {
             ProductType.find({
                     category: id
                 })
-                .select('_id productTypeName category')
+                .select('_id productTypeName imageURL category')
                 .populate('category', '_id categoryName')
                 .exec()
                 .then(docs => {
@@ -106,10 +102,8 @@ router.get('/category/:categoryId', (req, res, next) => {
                             return {
                                 _id: doc._id,
                                 productTypeName: doc.productTypeName,
-                                category: {
-                                    categoryId: doc.category._id,
-                                    categoryName: doc.category.categoryName
-                                },
+                                imageURL: result.imageURL,
+                                category: doc.category,
                                 request: {
                                     type: 'GET',
                                     url: 'http://localhost:3000/productTypes/' + doc._id
@@ -137,6 +131,7 @@ router.post('/', (req, res, next) => {
             const productType = new ProductType({
                 _id: new mongoose.Types.ObjectId(),
                 productTypeName: req.body.productTypeName,
+                imageURL: req.body.imageURL,
                 category: req.body.categoryId
             })
             return productType.save()
@@ -148,6 +143,7 @@ router.post('/', (req, res, next) => {
                 createdProductType: {
                     _id: result._id,
                     productTypeName: result.productTypeName,
+                    imageURL: result.imageURL,
                     category: result.category
                 },
                 request: {

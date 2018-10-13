@@ -85,29 +85,37 @@ router.post('/', (req, res, next) => {
                     message: 'Role not found'
                 })
             }
-            const account = new Account({
-                _id: new mongoose.Types.ObjectId(),
-                username: req.body.username,
-                password: req.body.password,
-                role: req.body.roleId
-            });
-            return account.save()
-        })
-        .then(result => {
-            console.log(result);
-            res.status(201).json({
-                message: 'Created account successfully',
-                createdAccount: {
-                    _id: result._id,
-                    username: result.username,
-                    password: result.password,
-                    role: result.role,
-                },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/accounts/' + result._id
-                }
-            });
+            Account.find({username: req.body.username})
+                .then(accounts => {
+                    if (accounts.length > 0){
+                        return res.status(404).json({
+                            message: 'Username already in use'
+                        })
+                    }
+                    const account = new Account({
+                        _id: new mongoose.Types.ObjectId(),
+                        username: req.body.username,
+                        password: req.body.password,
+                        role: req.body.roleId
+                    });
+                    return account.save()
+                })
+                .then(result => {
+                    console.log(result);
+                    res.status(201).json({
+                        message: 'Created account successfully',
+                        createdAccount: {
+                            _id: result._id,
+                            username: result.username,
+                            password: result.password,
+                            role: result.role,
+                        },
+                        request: {
+                            type: 'GET',
+                            url: 'http://localhost:3000/accounts/' + result._id
+                        }
+                    });
+                })
         })
         .catch(err => {
             console.log(err);

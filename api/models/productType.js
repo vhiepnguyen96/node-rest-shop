@@ -6,6 +6,9 @@ const productTypeSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    imageURL: {
+        type: String
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
