@@ -147,18 +147,18 @@ router.patch('/:username', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Account updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/accounts/' + username
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Account update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

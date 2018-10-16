@@ -198,18 +198,18 @@ router.patch('/:registeredSalesId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Registered sale updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/registeredSales/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Registered sale update error',
                         error: err
-                    })
+                    }])
                 });
         })
         .catch((err) => {

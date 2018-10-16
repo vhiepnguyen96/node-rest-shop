@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
                     return {
                         _id: doc._id,
                         productTypeName: doc.productTypeName,
-                        imageURL: result.imageURL,
+                        imageURL: doc.imageURL,
                         category: doc.category,
                         request: {
                             type: 'GET',
@@ -57,7 +57,7 @@ router.get('/:productTypeId', (req, res, next) => {
                     productType: {
                         _id: doc._id,
                         productTypeName: doc.productTypeName,
-                        imageURL: result.imageURL,
+                        imageURL: doc.imageURL,
                         category: doc.category
                     },
                     request: {
@@ -102,7 +102,7 @@ router.get('/category/:categoryId', (req, res, next) => {
                             return {
                                 _id: doc._id,
                                 productTypeName: doc.productTypeName,
-                                imageURL: result.imageURL,
+                                imageURL: doc.imageURL,
                                 category: doc.category,
                                 request: {
                                     type: 'GET',
@@ -180,18 +180,18 @@ router.patch('/:productTypeId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Product type updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/productTypes/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Product type update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

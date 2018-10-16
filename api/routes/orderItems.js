@@ -42,6 +42,25 @@ router.get('/', (req, res, next) => {
         });
 });
 
+router.get('/productPurchase', (req, res, next) => {
+    OrderItem.aggregate([
+        {
+            $group: {
+                _id: '$product',
+                count: {$sum: 1}
+            }
+        }
+    ], function (err, result) {
+        if (err) {
+            next(err);
+        } else {
+            res.json({
+                productPurchases: result
+            });
+        }
+    });
+});
+
 router.get('/:orderItemId', (req, res, next) => {
     const id = req.params.orderItemId;
     OrderItem.findById(id)
@@ -186,18 +205,18 @@ router.patch('/:orderItemId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Order item updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/orderItems/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Order item update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

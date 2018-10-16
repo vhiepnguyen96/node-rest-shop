@@ -182,18 +182,18 @@ router.patch('/:specificationTypeId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Specification type updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/specificationTypes/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Specification type update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

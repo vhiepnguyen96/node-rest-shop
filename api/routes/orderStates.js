@@ -136,18 +136,18 @@ router.patch('/:orderStateId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Order state updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/orderStates/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Order state update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

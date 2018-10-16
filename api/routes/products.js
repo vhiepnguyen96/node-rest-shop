@@ -52,9 +52,56 @@ router.get('/', (req, res, next) => {
         })
 });
 
+router.get('/onSale', (req, res, next) => {
+    Product.find({saleOff: { $ne: null }})
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    products: docs.map(doc => {
+                        return {
+                            _id: doc._id,
+                            productType: doc.productType,
+                            store: doc.store,
+                            productName: doc.productName,
+                            price: doc.price,
+                            quantity: doc.quantity,
+                            saleOff: doc.saleOff,
+                            specifications: doc.specifications,
+                            overviews: doc.overviews,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/products/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
+});
+
 router.post('/findByName', (req, res, next) => {
     Product.find({
-            productName: { '$regex' : req.body.name, '$options' : 'i' }
+            productName: {
+                '$regex': req.body.name,
+                '$options': 'i'
+            }
         })
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
@@ -424,18 +471,18 @@ router.patch('/:productId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Product updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/products/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Product update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

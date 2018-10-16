@@ -194,18 +194,18 @@ router.patch('/:customerId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Customer updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/customers/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Customer update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);

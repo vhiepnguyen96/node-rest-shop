@@ -256,18 +256,18 @@ router.patch('/:reviewProductId', (req, res, next) => {
                 })
                 .exec()
                 .then(result => {
-                    res.status(200).json({
+                    res.status(200).json([{
                         message: 'Review product updated',
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/reviewProducts/' + id
                         }
-                    });
+                    }]);
                 }).catch((err) => {
-                    res.status(500).json({
+                    res.status(500).json([{
                         message: 'Review product update error',
                         error: err
-                    })
+                    }])
                 });
         }).catch((err) => {
             console.log(err);
