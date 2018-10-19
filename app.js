@@ -8,6 +8,7 @@ const MongoClient = require('mongoose')
 const accountRoutes = require('./api/routes/accounts');
 const categoryRoutes = require('./api/routes/categories');
 const customerRoutes = require('./api/routes/customers');
+const checkoutRoutes = require('./api/routes/checkouts');
 const deliveryAddressRoutes = require('./api/routes/deliveryAddresses');
 const deliveryPriceRoutes = require('./api/routes/deliveryPrices');
 const followRoutes = require('./api/routes/followStores');
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 app.use('/accounts', accountRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/customers', customerRoutes);
+app.use('/checkouts', checkoutRoutes);
 app.use('/deliveryAddresses', deliveryAddressRoutes);
 app.use('/deliveryPrices', deliveryPriceRoutes);
 app.use('/followStores', followRoutes);
