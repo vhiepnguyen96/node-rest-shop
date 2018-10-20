@@ -3,12 +3,11 @@ const keySecret = 'sk_test_VWec3gEiwOvZ7wQ6BCWYCHk2';
 
 const express = require('express');
 const router = express.Router();
+
 const stripe = require('stripe')(keySecret);
 
-stripe.setTimeout(20000);
-
-router.post("/charge", (req, res, next) => {
-    console.log(req.body);
+router.post('/charge', (req, res, next) => {
+    console.log("Body: " + req.body.source);
     stripe.customers.create({
             email: req.body.email,
             source: req.body.source
@@ -22,16 +21,15 @@ router.post("/charge", (req, res, next) => {
                 })
                 .then(charge => {
                     console.log("Purchase Success:", charge);
-                    res.status(200).json(charge)
+                    return res.status(200).json(charge)
                 })
                 .catch(err => {
                     console.log("Purchase Error:", err);
-                    res.status(500).json(err);
+                    return res.status(500).json(err);
                 });
-        })
-        .catch(err => {
+        }).catch(err => {
             console.log("Create Customer Error:", err);
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
 });
 

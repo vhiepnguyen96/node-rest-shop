@@ -14,7 +14,6 @@ router.get('/', (req, res, next) => {
     Order.find()
         .select('_id totalQuantity totalPrice purchaseDate customer deliveryAddress deliveryPrice paymentMethod orderState')
         .populate('customer', 'name')
-        .populate('deliveryAddress', 'presentation phoneNumber address')
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
@@ -60,7 +59,6 @@ router.get('/:orderId', (req, res, next) => {
     Order.findById(req.params.orderId)
         .select('_id totalQuantity totalPrice purchaseDate customer deliveryAddress deliveryPrice paymentMethod orderState')
         .populate('customer', 'name')
-        .populate('deliveryAddress', 'presentation phoneNumber address')
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
@@ -105,7 +103,6 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('_id totalQuantity totalPrice purchaseDate customer deliveryAddress deliveryPrice paymentMethod orderState')
         .populate('customer', 'name')
-        .populate('deliveryAddress', 'presentation phoneNumber address')
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
@@ -155,68 +152,60 @@ router.post('/', (req, res, next) => {
                     message: 'Customer not found'
                 })
             }
-            DeliveryAddress.findById(req.body.deliveryAddressId)
+            DeliveryPrice.findById(req.body.deliveryPriceId)
                 .then((result) => {
                     if (!result) {
                         return res.status(404).json({
-                            message: 'Delivery address not found'
+                            message: 'Delivery price not found'
                         })
                     }
-                    DeliveryPrice.findById(req.body.deliveryPriceId)
-                        .then((result) => {
+                    PaymentMethod.findById(req.body.paymentMethodId)
+                        .then(result => {
                             if (!result) {
                                 return res.status(404).json({
-                                    message: 'Delivery price not found'
+                                    message: 'Payment method not found'
                                 })
                             }
-                            PaymentMethod.findById(req.body.paymentMethodId)
+                            OrderState.findById(req.body.orderStateId)
                                 .then(result => {
                                     if (!result) {
                                         return res.status(404).json({
-                                            message: 'Payment method not found'
+                                            message: 'Order state not found'
                                         })
                                     }
-                                    OrderState.findById(req.body.orderStateId)
-                                        .then(result => {
-                                            if (!result) {
-                                                return res.status(404).json({
-                                                    message: 'Order state not found'
-                                                })
-                                            }
-                                            const order = new Order({
-                                                _id: new mongoose.Types.ObjectId(),
-                                                customer: req.body.customerId,
-                                                deliveryAddress: req.body.deliveryAddressId,
-                                                deliveryPrice: req.body.deliveryPriceId,
-                                                totalQuantity: req.body.totalQuantity,
-                                                totalPrice: req.body.totalPrice,
-                                                purchaseDate: new Date(),
-                                                paymentMethod: req.body.paymentMethodId,
-                                                orderState: req.body.orderStateId
-                                            })
-                                            return order.save()
-                                        })
-                                        .then(doc => {
-                                            console.log(doc);
-                                            res.status(201).json({
-                                                message: 'Order saved',
-                                                createdOrder: {
-                                                    _id: doc._id,
-                                                    customer: doc.customer,
-                                                    deliveryAddress: doc.deliveryAddress,
-                                                    deliveryPrice: doc.deliveryPrice,
-                                                    totalQuantity: doc.totalQuantity,
-                                                    totalPrice: doc.totalPrice,
-                                                    purchaseDate: doc.purchaseDate,
-                                                    paymentMethod: doc.paymentMethod,
-                                                    orderState: doc.orderState,
-                                                },
-                                                request: {
-                                                    type: 'GET',
-                                                    url: 'http://localhost:3000/orders/' + doc._id
-                                                }
-                                            });
-                                        })
+                                    const order = new Order({
+                                        _id: new mongoose.Types.ObjectId(),
+                                        customer: req.body.customerId,
+                                        deliveryAddress: req.body.deliveryAddress,
+                                        deliveryPrice: req.body.deliveryPriceId,
+                                        totalQuantity: req.body.totalQuantity,
+                                        totalPrice: req.body.totalPrice,
+                                        purchaseDate: new Date(),
+                                        paymentMethod: req.body.paymentMethodId,
+                                        orderState: req.body.orderStateId
+                                    })
+                                    return order.save()
+                                })
+                                .then(doc => {
+                                    console.log(doc);
+                                    res.status(201).json({
+                                        message: 'Order saved',
+                                        createdOrder: {
+                                            _id: doc._id,
+                                            customer: doc.customer,
+                                            deliveryAddress: doc.deliveryAddress,
+                                            deliveryPrice: doc.deliveryPrice,
+                                            totalQuantity: doc.totalQuantity,
+                                            totalPrice: doc.totalPrice,
+                                            purchaseDate: doc.purchaseDate,
+                                            paymentMethod: doc.paymentMethod,
+                                            orderState: doc.orderState,
+                                        },
+                                        request: {
+                                            type: 'GET',
+                                            url: 'http://localhost:3000/orders/' + doc._id
+                                        }
+                                    });
                                 })
                         })
                 })

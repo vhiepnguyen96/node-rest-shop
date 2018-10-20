@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 
 const deliveryPriceSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    productQuantity: {
+    totalPriceMin: {
+        type: Number
+    },
+    totalPriceMax: {
         type: Number,
-        required: true
+        default: null
     },
     transportFee: {
         type: String,

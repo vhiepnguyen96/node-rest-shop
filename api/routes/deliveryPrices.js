@@ -7,7 +7,7 @@ const Order = require('../models/order');
 
 router.get('/', (req, res, next) => {
     DeliveryPrice.find()
-        .select('_id productQuantity transportFee description')
+        .select('_id totalPriceMin totalPriceMax transportFee description')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -17,7 +17,8 @@ router.get('/', (req, res, next) => {
                     deliveryPrices: docs.map(doc => {
                         return {
                             _id: doc._id,
-                            productQuantity: doc.productQuantity,
+                            totalPriceMin: doc.totalPriceMin,
+                            totalPriceMax: doc.totalPriceMax,
                             transportFee: doc.transportFee,
                             description: doc.description,
                             request: {
@@ -43,7 +44,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:deliveryPriceId', (req, res, next) => {
     DeliveryPrice.findById(req.params.deliveryPriceId)
-        .select('_id productQuantity transportFee description')
+        .select('_id totalPriceMin totalPriceMax transportFee description')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -51,7 +52,8 @@ router.get('/:deliveryPriceId', (req, res, next) => {
                 res.status(200).json({
                     category: {
                         _id: doc._id,
-                        productQuantity: doc.productQuantity,
+                        totalPriceMin: doc.totalPriceMin,
+                        totalPriceMax: doc.totalPriceMax,
                         transportFee: doc.transportFee,
                         description: doc.description,
                     },
@@ -76,12 +78,13 @@ router.get('/:deliveryPriceId', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
     DeliveryPrice.findOne({
-            productQuantity: req.body.productQuantity
+            totalPriceMin: req.body.totalPriceMin,
+            totalPriceMax: req.body.totalPriceMax
         })
         .then((result) => {
             if (result) {
                 return res.status(500).json({
-                    message: 'Transport fee of product quantity is already',
+                    message: 'Transport fee of order price is already',
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3000/deliveryPrices/' + result._id
@@ -90,7 +93,8 @@ router.post('/', (req, res, next) => {
             }
             const deliveryPrice = new DeliveryPrice({
                 _id: new mongoose.Types.ObjectId(),
-                productQuantity: req.body.productQuantity,
+                totalPriceMin: req.body.totalPriceMin,
+                totalPriceMax: req.body.totalPriceMax,
                 transportFee: req.body.transportFee,
                 description: req.body.description
             });
@@ -101,7 +105,8 @@ router.post('/', (req, res, next) => {
                         message: 'Created delivery price successfully',
                         createdDeliveryPrice: {
                             _id: result._id,
-                            productQuantity: result.productQuantity,
+                            totalPriceMin: result.totalPriceMin,
+                            totalPriceMax: result.totalPriceMax,
                             transportFee: result.transportFee,
                             description: result.description,
                             request: {
@@ -191,7 +196,8 @@ router.delete('/:deliveryPriceId', (req, res, next) => {
                                     type: 'POST',
                                     url: 'http://localhost:3000/deliveryPrices',
                                     body: {
-                                        productQuantity: 'Number',
+                                        totalPriceMin: 'Number',
+                                        totalPriceMax: 'Number',
                                         transportFee: 'String',
                                         description: 'String'
                                     }

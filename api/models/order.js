@@ -8,9 +8,18 @@ const orderSchema = mongoose.Schema({
         required: true
     },
     deliveryAddress: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'DeliveryAddress',
-        required: true
+        presentation: {
+            type: String,
+            required: true
+        },
+        phoneNumber: {
+            type: String,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true
+        }
     },
     deliveryPrice: {
         type: mongoose.Schema.Types.ObjectId,
