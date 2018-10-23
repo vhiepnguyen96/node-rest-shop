@@ -83,6 +83,39 @@ router.get('/customer/:customerId', (req, res, next) => {
         });
 });
 
+router.get('/:customerId/:storeId', (req, res, next) => {
+    FollowStore.findOne({
+            customer: req.params.customerId,
+            store: req.params.storeId
+        })
+        .select('customer store')
+        .populate('customer', 'name')
+        .populate('store', 'storeName')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    followStore: {
+                        _id: doc._id,
+                        customer: doc.customer,
+                        store: doc.store,
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.get('/store/:storeId', (req, res, next) => {
     const id = req.params.storeId;
     FollowStore.find({

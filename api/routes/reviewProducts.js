@@ -318,4 +318,45 @@ router.delete('/:reviewProductId', (req, res, next) => {
         });
 });
 
+router.delete('/product/:productId', (req, res, next) => {
+    const id = req.params.productId;
+    Product.findById(id)
+        .then((product) => {
+            if (!product) {
+                return res.status(404).json({
+                    message: 'Product not found'
+                })
+            }
+            ReviewProduct.deleteMany({
+                    product: id
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Review product of ' + id + ' deleted',
+                        request: {
+                            type: 'POST',
+                            url: 'http://localhost:3000/reviewProducts',
+                            body: {
+                                customerId: 'Customer ID',
+                                productId: 'Product ID',
+                                ratingLevelId: 'RatingLevel ID',
+                                review: 'String'
+                            }
+                        }
+                    })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Review product delete error',
+                        error: err
+                    })
+                });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 module.exports = router;

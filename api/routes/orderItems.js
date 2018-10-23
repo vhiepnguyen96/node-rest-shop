@@ -107,7 +107,6 @@ router.get('/order/:orderId', (req, res, next) => {
                     order: id
                 })
                 .select('_id order product quantity')
-                .populate('product', '_id productName price saleOff')
                 .exec()
                 .then(docs => {
                     console.log(docs);
@@ -143,7 +142,7 @@ router.post('/', (req, res, next) => {
                     message: 'Order not found'
                 })
             }
-            Product.findById(req.body.productId)
+            Product.findById(req.body.product._id)
                 .then(product => {
                     if (!product) {
                         return res.status(404).json({
@@ -153,7 +152,7 @@ router.post('/', (req, res, next) => {
                     const orderItem = new OrderItem({
                         _id: new mongoose.Types.ObjectId(),
                         order: req.body.orderId,
-                        product: req.body.productId,
+                        product: req.body.product,
                         quantity: req.body.quantity
                     })
                     return orderItem.save()

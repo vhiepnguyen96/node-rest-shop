@@ -10,14 +10,14 @@ router.get('/', (req, res, next) => {
     WishList.find()
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'productName')
+        .populate('product', 'store productName price saleOff')
         .exec()
         .then(docs => {
             console.log(docs);
             if (docs.length >= 0) {
                 res.status(200).json({
                     count: docs.length,
-                    followStores: docs.map(doc => {
+                    wishLists: docs.map(doc => {
                         return {
                             _id: doc._id,
                             customer: doc.customer,
@@ -47,7 +47,7 @@ router.get('/:wishListId', (req, res, next) => {
     WishList.findById(req.params.wishListId)
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'productName')
+        .populate('product', 'store productName price saleOff')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -77,6 +77,43 @@ router.get('/:wishListId', (req, res, next) => {
         });
 });
 
+router.get('/:customerId/:productId', (req, res, next) => {
+    WishList.findOne({
+            customer: req.params.customerId,
+            product: req.params.productId
+        })
+        .select('customer product')
+        .populate('customer', 'name')
+        .populate('product', 'store productName price saleOff')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    wishList: {
+                        _id: doc._id,
+                        customer: doc.customer,
+                        product: doc.product,
+                    },
+                    request: {
+                        type: 'GET',
+                        description: 'Get all wish list at: http://localhost:3000/wishList'
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
+});
+
 router.get('/customer/:customerId', (req, res, next) => {
     const id = req.params.customerId;
     WishList.find({
@@ -84,7 +121,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'productName')
+        .populate('product', 'store productName price saleOff')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -221,44 +258,44 @@ router.patch('/:wishListId', (req, res, next) => {
 
 router.delete('/:customerId/:productId', (req, res, next) => {
     WishList.findOne({
-        customer: req.params.customerId,
-        product: req.params.productId
-    })
-    .then((wishList) => {
-        if (!wishList) {
-            return res.status(404).json({
-                message: 'Wish list not found'
-            })
-        }
-        WishList.deleteOne({
-                customer: req.params.customerId,
-                product: req.params.productId
-            })
-            .exec()
-            .then(result => {
-                res.status(200).json({
-                    message: 'Wish list deleted',
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:3000/wishList',
-                        body: {
-                            customerId: 'Customer ID',
-                            productId: 'Product ID'
-                        }
-                    }
-                })
-            }).catch((err) => {
-                res.status(500).json({
-                    message: 'Wish list delete error',
-                    error: err
-                })
-            });
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).json({
-            error: err
+            customer: req.params.customerId,
+            product: req.params.productId
         })
-    });
+        .then((wishList) => {
+            if (!wishList) {
+                return res.status(404).json({
+                    message: 'Wish list not found'
+                })
+            }
+            WishList.deleteOne({
+                    customer: req.params.customerId,
+                    product: req.params.productId
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Wish list deleted',
+                        request: {
+                            type: 'POST',
+                            url: 'http://localhost:3000/wishList',
+                            body: {
+                                customerId: 'Customer ID',
+                                productId: 'Product ID'
+                            }
+                        }
+                    })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Wish list delete error',
+                        error: err
+                    })
+                });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
 });
 
 module.exports = router;
