@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
             if (docs.length >= 0) {
                 res.status(200).json({
                     count: docs.length,
-                    wishLists: docs.map(doc => {
+                    wishList: docs.map(doc => {
                         return {
                             _id: doc._id,
                             customer: doc.customer,
@@ -77,7 +77,7 @@ router.get('/:wishListId', (req, res, next) => {
         });
 });
 
-router.get('/:customerId/:productId', (req, res, next) => {
+router.get('/check/:customerId/:productId', (req, res, next) => {
     WishList.findOne({
             customer: req.params.customerId,
             product: req.params.productId

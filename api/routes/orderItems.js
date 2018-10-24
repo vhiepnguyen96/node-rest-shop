@@ -8,7 +8,8 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     OrderItem.find()
-        .select('_id order product quantity')
+        .select('_id order product quantity orderItemState')
+        .populate('orderItemState', 'orderStateName')
         .exec()
         .then((docs) => {
             console.log(docs);
@@ -21,6 +22,7 @@ router.get('/', (req, res, next) => {
                             orderId: doc.order,
                             product: doc.product,
                             quantity: doc.quantity,
+                            orderItemState: doc.orderItemState,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:3000/orderItems/' + doc._id
@@ -63,7 +65,8 @@ router.get('/productPurchase', (req, res, next) => {
 router.get('/:orderItemId', (req, res, next) => {
     const id = req.params.orderItemId;
     OrderItem.findById(id)
-        .select('_id order product quantity')
+        .select('_id order product quantity orderItemState')
+        .populate('orderItemState', 'orderStateName')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -74,6 +77,7 @@ router.get('/:orderItemId', (req, res, next) => {
                         orderId: doc.order,
                         product: doc.product,
                         quantity: doc.quantity,
+                        orderItemState: doc.orderItemState
                     },
                     request: {
                         type: 'GET',
@@ -106,7 +110,8 @@ router.get('/order/:orderId', (req, res, next) => {
             OrderItem.find({
                     order: id
                 })
-                .select('_id order product quantity')
+                .select('_id order product quantity orderItemState')
+                .populate('orderItemState', 'orderStateName')
                 .exec()
                 .then(docs => {
                     console.log(docs);
@@ -118,6 +123,7 @@ router.get('/order/:orderId', (req, res, next) => {
                                 orderId: doc.order,
                                 product: doc.product,
                                 quantity: doc.quantity,
+                                orderItemState: doc.orderItemState,
                                 request: {
                                     type: 'GET',
                                     url: 'http://localhost:3000/orderItems/' + doc._id
@@ -153,7 +159,8 @@ router.post('/', (req, res, next) => {
                         _id: new mongoose.Types.ObjectId(),
                         order: req.body.orderId,
                         product: req.body.product,
-                        quantity: req.body.quantity
+                        quantity: req.body.quantity,
+                        orderItemState: req.body.orderItemStateId
                     })
                     return orderItem.save()
                 })
@@ -166,6 +173,7 @@ router.post('/', (req, res, next) => {
                             orderId: doc.order,
                             product: doc.product,
                             quantity: doc.quantity,
+                            orderItemState: doc.orderItemState
                         },
                         request: {
                             type: 'GET',

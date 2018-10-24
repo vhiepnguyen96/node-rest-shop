@@ -83,7 +83,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         });
 });
 
-router.get('/:customerId/:storeId', (req, res, next) => {
+router.get('/check/:customerId/:storeId', (req, res, next) => {
     FollowStore.findOne({
             customer: req.params.customerId,
             store: req.params.storeId

@@ -28,6 +28,11 @@ const orderItemSchema = mongoose.Schema({
     quantity: {
         type: Number,
         required: true
+    },
+    orderItemState: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'OrderState',
+        required: true
     }
 });
 

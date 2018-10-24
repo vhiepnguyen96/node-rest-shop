@@ -144,6 +144,54 @@ router.get('/customer/:customerId', (req, res, next) => {
         });
 });
 
+router.post('/purchased', (req, res, next) => {
+    Order.find({
+            customer: req.body.customerId,
+            orderState: req.body.orderStateId
+        })
+        .select('_id totalQuantity totalPrice purchaseDate customer deliveryAddress deliveryPrice paymentMethod orderState')
+        .populate('customer', 'name')
+        .populate('deliveryPrice', 'transportFee')
+        .populate('paymentMethod', 'paymentMethodName')
+        .populate('orderState', 'orderStateName')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    orders: docs.map(doc => {
+                        return {
+                            _id: doc._id,
+                            customer: doc.customer,
+                            deliveryAddress: doc.deliveryAddress,
+                            deliveryPrice: doc.deliveryPrice,
+                            totalQuantity: doc.totalQuantity,
+                            totalPrice: doc.totalPrice,
+                            purchaseDate: doc.purchaseDate,
+                            paymentMethod: doc.paymentMethod,
+                            orderState: doc.orderState,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/orders/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.post('/', (req, res, next) => {
     Customer.findById(req.body.customerId)
         .then((result) => {
