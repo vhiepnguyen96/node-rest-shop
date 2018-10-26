@@ -27,8 +27,17 @@ const registeredSaleSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    username: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
     isApprove: {
-        type: Boolean
+        type: Boolean,
+        default: null
     }
 });
 

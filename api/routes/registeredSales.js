@@ -7,7 +7,7 @@ const Customer = require('../models/customer');
 
 router.get('/', (req, res, next) => {
     RegisteredSale.find()
-        .select('_id customer storeName address phoneNumber email registeredDate isApprove')
+        .select('_id customer storeName address phoneNumber email registeredDate username isApprove')
         .populate('customer', 'name')
         .exec()
         .then(docs => {
@@ -22,7 +22,8 @@ router.get('/', (req, res, next) => {
                         phoneNumber: doc.phoneNumber,
                         email: doc.email,
                         registeredDate: doc.registeredDate,
-                        isApprove: doc.isApprove == null ? "Đang chờ phê duyệt" : (doc.isApprove ? "Đã được phê duyệt" : "Không được phê duyệt"),
+                        username: doc.username,
+                        isApprove: doc.isApprove,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/registeredSales/' + doc._id
@@ -50,7 +51,7 @@ router.get('/', (req, res, next) => {
 router.get('/:registeredSalesId', (req, res, next) => {
     const id = req.params.registeredSalesId;
     RegisteredSale.findById(id)
-        .select('_id customer storeName address phoneNumber email registeredDate isApprove')
+        .select('_id customer storeName address phoneNumber email registeredDate username password isApprove')
         .populate('customer', 'name')
         .exec()
         .then(doc => {
@@ -65,7 +66,9 @@ router.get('/:registeredSalesId', (req, res, next) => {
                         phoneNumber: doc.phoneNumber,
                         email: doc.email,
                         registeredDate: doc.registeredDate,
-                        isApprove: doc.isApprove == null ? "Đang chờ phê duyệt" : (doc.isApprove ? "Đã được phê duyệt" : "Không được phê duyệt"),
+                        username: doc.username,
+                        password: doc.password,
+                        isApprove: doc.isApprove,
                     },
                     request: {
                         type: 'GET',
@@ -90,7 +93,7 @@ router.get('/customer/:customerId', (req, res, next) => {
     RegisteredSale.find({
             customer: req.params.customerId
         })
-        .select('_id customer storeName address phoneNumber email registeredDate isApprove')
+        .select('_id customer storeName address phoneNumber email registeredDate username password isApprove')
         .populate('customer', 'name')
         .exec()
         .then(docs => {
@@ -105,7 +108,8 @@ router.get('/customer/:customerId', (req, res, next) => {
                         phoneNumber: doc.phoneNumber,
                         email: doc.email,
                         registeredDate: doc.registeredDate,
-                        isApprove: doc.isApprove == null ? "Đang chờ phê duyệt" : (doc.isApprove ? "Đã được phê duyệt" : "Không được phê duyệt"),
+                        username: doc.username,
+                        isApprove: doc.isApprove,
                         request: {
                             type: 'GET',
                             url: 'http://localhost:3000/registeredSales/' + doc._id
@@ -146,7 +150,8 @@ router.post('/', (req, res, next) => {
                 phoneNumber: req.body.phoneNumber,
                 email: req.body.email,
                 registeredDate: new Date(),
-                isApprove: null
+                username: req.body.username,
+                password: req.body.password
             })
             return registeredSale.save()
         })
@@ -162,7 +167,8 @@ router.post('/', (req, res, next) => {
                     phoneNumber: result.phoneNumber,
                     email: result.email,
                     registeredDate: result.registeredDate,
-                    isApprove: "Đang chờ phê duyệt"
+                    username: result.username,
+                    isApprove: result.isApprove
                 },
                 request: {
                     type: 'GET',
@@ -244,7 +250,9 @@ router.delete('/:registeredSalesId', (req, res, next) => {
                                 storeName: 'String',
                                 address: 'String',
                                 phoneNumber: 'String',
-                                email: 'String'
+                                email: 'String',
+                                username: 'String',
+                                password: 'String'
                             }
                         }
                     })
