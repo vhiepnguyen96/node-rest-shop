@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
     WishList.find()
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff')
+        .populate('product', 'store productName price saleOff quantity')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -47,7 +47,7 @@ router.get('/:wishListId', (req, res, next) => {
     WishList.findById(req.params.wishListId)
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff')
+        .populate('product', 'store productName price saleOff quantity')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -84,7 +84,7 @@ router.get('/check/:customerId/:productId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff')
+        .populate('product', 'store productName price saleOff quantity')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -121,7 +121,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'productName price')
+        .populate('product', 'productName price quantity')
         .exec()
         .then(docs => {
             console.log(docs);

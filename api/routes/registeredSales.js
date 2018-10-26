@@ -109,6 +109,7 @@ router.get('/customer/:customerId', (req, res, next) => {
                         email: doc.email,
                         registeredDate: doc.registeredDate,
                         username: doc.username,
+                        password: doc.password,
                         isApprove: doc.isApprove,
                         request: {
                             type: 'GET',

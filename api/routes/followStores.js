@@ -50,7 +50,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('customer store')
         .populate('customer', 'name')
-        .populate('store', 'storeName')
+        .populate('store', 'storeName location createdDate categories')
         .exec()
         .then(docs => {
             console.log(docs);
