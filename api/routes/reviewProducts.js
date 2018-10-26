@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
             if (docs.length >= 0) {
                 res.status(200).json({
                     count: docs.length,
-                    reviewStores: docs.map(doc => {
+                    reviewProducts: docs.map(doc => {
                         return {
                             _id: doc._id,
                             customer: doc.customer,

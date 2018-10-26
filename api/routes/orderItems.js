@@ -8,7 +8,7 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next) => {
     OrderItem.find()
-        .select('_id order product quantity orderItemState')
+        .select('_id order product quantity orderItemState isReview')
         .populate('orderItemState', 'orderStateName')
         .exec()
         .then((docs) => {
@@ -23,6 +23,47 @@ router.get('/', (req, res, next) => {
                             product: doc.product,
                             quantity: doc.quantity,
                             orderItemState: doc.orderItemState,
+                            isReview: doc.isReview,
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/orderItems/' + doc._id
+                            }
+                        }
+                    })
+                });
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/getByState/:oderItemStateId', (req, res, next) => {
+    OrderItem.find({
+            orderItemState: req.params.oderItemStateId
+        })
+        .select('_id order product quantity orderItemState isReview')
+        .populate('orderItemState', 'orderStateName')
+        .exec()
+        .then((docs) => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                res.status(200).json({
+                    count: docs.length,
+                    orderItems: docs.map(doc => {
+                        return {
+                            _id: doc._id,
+                            orderId: doc.order,
+                            product: doc.product,
+                            quantity: doc.quantity,
+                            orderItemState: doc.orderItemState,
+                            isReview: doc.isReview,
                             request: {
                                 type: 'GET',
                                 url: 'http://localhost:3000/orderItems/' + doc._id
@@ -44,14 +85,14 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/productPurchase', (req, res, next) => {
-    OrderItem.aggregate([
-        {
-            $group: {
-                _id: '$product',
-                count: {$sum: 1}
+    OrderItem.aggregate([{
+        $group: {
+            _id: '$product',
+            count: {
+                $sum: 1
             }
         }
-    ], function (err, result) {
+    }], function (err, result) {
         if (err) {
             next(err);
         } else {
@@ -65,7 +106,7 @@ router.get('/productPurchase', (req, res, next) => {
 router.get('/:orderItemId', (req, res, next) => {
     const id = req.params.orderItemId;
     OrderItem.findById(id)
-        .select('_id order product quantity orderItemState')
+        .select('_id order product quantity orderItemState isReview')
         .populate('orderItemState', 'orderStateName')
         .exec()
         .then(doc => {
@@ -77,7 +118,8 @@ router.get('/:orderItemId', (req, res, next) => {
                         orderId: doc.order,
                         product: doc.product,
                         quantity: doc.quantity,
-                        orderItemState: doc.orderItemState
+                        orderItemState: doc.orderItemState,
+                        isReview: doc.isReview
                     },
                     request: {
                         type: 'GET',
@@ -110,7 +152,7 @@ router.get('/order/:orderId', (req, res, next) => {
             OrderItem.find({
                     order: id
                 })
-                .select('_id order product quantity orderItemState')
+                .select('_id order product quantity orderItemState isReview')
                 .populate('orderItemState', 'orderStateName')
                 .exec()
                 .then(docs => {
@@ -124,6 +166,7 @@ router.get('/order/:orderId', (req, res, next) => {
                                 product: doc.product,
                                 quantity: doc.quantity,
                                 orderItemState: doc.orderItemState,
+                                isReview: doc.isReview,
                                 request: {
                                     type: 'GET',
                                     url: 'http://localhost:3000/orderItems/' + doc._id

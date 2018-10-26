@@ -33,6 +33,10 @@ const orderItemSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'OrderState',
         required: true
+    },
+    isReview: {
+        type: Boolean,
+        default: false
     }
 });
 

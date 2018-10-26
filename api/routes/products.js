@@ -186,6 +186,30 @@ router.get('/:productId', (req, res, next) => {
         });
 });
 
+router.get('/getStore/:productId', (req, res, next) => {
+    Product.findById(req.params.productId)
+        .select('_id store')
+        .populate('store', 'storeName location')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    store: doc.store
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No vaild entry found for provided ID'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
 
 router.get('/store/:storeId', (req, res, next) => {
     Product.find({

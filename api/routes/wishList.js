@@ -121,7 +121,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff')
+        .populate('product', 'productName price')
         .exec()
         .then(docs => {
             console.log(docs);

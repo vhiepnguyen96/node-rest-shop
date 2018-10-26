@@ -86,6 +86,43 @@ router.get('/:reviewStoreId', (req, res, next) => {
         });
 });
 
+router.get('/check/:customerId/:storeId', (req, res, next) => {
+    ReviewStore.findOne({
+            customer: req.params.customerId,
+            store: req.params.storeId
+        })
+        .select('_id customer store ratingLevel review dateReview')
+        .populate('customer', '_id name')
+        .populate('store', '_id storeName')
+        .populate('ratingLevel', '_id ratingLevel description')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json({
+                    reviewStore: {
+                        _id: doc._id,
+                        customer: doc.customer,
+                        store: doc.store,
+                        ratingLevel: doc.ratingLevel,
+                        review: doc.review,
+                        dateReview: doc.dateReview,
+                    }
+                });
+            } else {
+                res.status(404).json({
+                    message: 'No vaild entry found for provided ID'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.get('/customer/:customerId', (req, res, next) => {
     const id = req.params.customerId;
     Customer.findById(id)
