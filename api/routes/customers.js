@@ -8,7 +8,6 @@ const Account = require('../models/account');
 router.get('/', (req, res, next) => {
     Customer.find()
         .select('_id account name gender birthday email phoneNumber')
-        .populate('account', '_id username')
         .exec()
         .then(docs => {
             const response = {
@@ -50,7 +49,6 @@ router.get('/:customerId', (req, res, next) => {
     const id = req.params.customerId;
     Customer.findById(id)
         .select('_id account name gender birthday email phoneNumber')
-        .populate('account', '_id username')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -88,7 +86,6 @@ router.get('/account/:accountId', (req, res, next) => {
     const id = req.params.accountId;
     Customer.findOne({account: id})
         .select('_id account name gender birthday email phoneNumber')
-        .populate('account', '_id username')
         .exec()
         .then(doc => {
             console.log(doc);
