@@ -12,19 +12,16 @@ const customerSchema = mongoose.Schema({
     },
     gender: {
         type: String,
-        required: true
     },
     birthday:{
         type: Date,
-        default: null
     },
     email: {
         type: String,
         required: true
     },
     phoneNumber: {
-        type: String,
-        required: true
+        type: String
     }
 });
 
