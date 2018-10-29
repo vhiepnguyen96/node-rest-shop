@@ -77,6 +77,37 @@ router.get('/:username', (req, res, next) => {
         });
 });
 
+router.post('/checkLogin', (req, res, next) => {
+    Account.findOne({
+            username: req.body.username,
+            password: req.body.password
+        })
+        .select('_id username password role')
+        .populate('role', '_id roleName')
+        .exec()
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    message: 'Account not found'
+                })
+            }
+            res.status(200).json({
+                account: {
+                    _id: result._id,
+                    username: result.username,
+                    password: result.password,
+                    role: result.role
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.post('/', (req, res, next) => {
     Role.findById(req.body.roleId)
         .then(role => {

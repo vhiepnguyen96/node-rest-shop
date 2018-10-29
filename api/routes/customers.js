@@ -84,7 +84,9 @@ router.get('/:customerId', (req, res, next) => {
 
 router.get('/account/:accountId', (req, res, next) => {
     const id = req.params.accountId;
-    Customer.findOne({account: id})
+    Customer.findOne({
+            account: id
+        })
         .select('_id account name gender birthday email phoneNumber')
         .exec()
         .then(doc => {
@@ -93,7 +95,6 @@ router.get('/account/:accountId', (req, res, next) => {
                 res.status(200).json({
                     customer: {
                         _id: doc._id,
-                        account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
                         birthday: doc.birthday,
@@ -116,52 +117,44 @@ router.get('/account/:accountId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    Account.findById(req.body.accountId)
-        .then(account => {
-            if (!account) {
-                return res.status(404).json({
-                    message: 'Account not found'
+    Customer.findOne({
+            account: req.body.accountId
+        })
+        .then(result => {
+            if (result) {
+                return res.status(500).json({
+                    message: 'Account has been used'
                 })
             }
-            Customer.findOne({
-                    account: req.body.accountId
-                })
-                .then(result => {
-                    if (result) {
-                        return res.status(500).json({
-                            message: 'Account has been used'
-                        })
-                    }
-                    const customer = new Customer({
-                        _id: new mongoose.Types.ObjectId(),
-                        account: req.body.accountId,
-                        name: req.body.name,
-                        gender: req.body.gender,
-                        birthday: req.body.birthday,
-                        email: req.body.email,
-                        phoneNumber: req.body.phoneNumber
-                    })
-                    return customer.save()
-                })
-                .then(result => {
-                    console.log(result);
-                    res.status(201).json({
-                        message: 'Customer stored',
-                        createdCustomer: {
-                            _id: result._id,
-                            account: result.account,
-                            name: result.name,
-                            gender: result.gender,
-                            birthday: result.birthday,
-                            email: result.email,
-                            phoneNumber: result.phoneNumber,
-                        },
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/customers/' + result._id
-                        }
-                    });
-                })
+            const customer = new Customer({
+                _id: new mongoose.Types.ObjectId(),
+                account: req.body.accountId,
+                name: req.body.name,
+                gender: req.body.gender,
+                birthday: req.body.birthday,
+                email: req.body.email,
+                phoneNumber: req.body.phoneNumber
+            })
+            return customer.save()
+        })
+        .then(result => {
+            console.log(result);
+            res.status(201).json({
+                message: 'Customer stored',
+                createdCustomer: {
+                    _id: result._id,
+                    account: result.account,
+                    name: result.name,
+                    gender: result.gender,
+                    birthday: result.birthday,
+                    email: result.email,
+                    phoneNumber: result.phoneNumber,
+                },
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/customers/' + result._id
+                }
+            });
         })
         .catch(err => {
             console.log(err);
