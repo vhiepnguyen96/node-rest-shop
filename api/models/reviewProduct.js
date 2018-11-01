@@ -8,9 +8,18 @@ const reviewProductSchema = mongoose.Schema({
         required: true
     },
     product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
+        _id : {
+            type: String,
+            require: true
+        },
+        productName: {
+            type: String,
+            require: true
+        },
+        imageURL: {
+            type: String,
+            required: true
+        }
     },
     ratingStar: {
         type: mongoose.Schema.Types.ObjectId,

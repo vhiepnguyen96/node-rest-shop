@@ -56,7 +56,6 @@ router.get('/:customerId', (req, res, next) => {
                 res.status(200).json({
                     customer: {
                         _id: doc._id,
-                        account: doc.account,
                         name: doc.name,
                         gender: doc.gender,
                         birthday: doc.birthday,

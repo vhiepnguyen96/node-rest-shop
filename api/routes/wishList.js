@@ -10,7 +10,7 @@ router.get('/', (req, res, next) => {
     WishList.find()
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff quantity')
+        .populate('product', 'productName')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -47,7 +47,7 @@ router.get('/:wishListId', (req, res, next) => {
     WishList.findById(req.params.wishListId)
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff quantity')
+        .populate('product', 'productName')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -84,7 +84,7 @@ router.get('/check/:customerId/:productId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'store productName price saleOff quantity')
+        .populate('product', 'productName')
         .exec()
         .then(doc => {
             console.log(doc);
@@ -121,7 +121,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         })
         .select('customer product')
         .populate('customer', 'name')
-        .populate('product', 'productName price quantity')
+        .populate('product', 'productName')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -247,6 +247,44 @@ router.patch('/:wishListId', (req, res, next) => {
                         message: 'Wish list update error',
                         error: err
                     }])
+                });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.delete('/deleteById/:wishListId', (req, res, next) => {
+    WishList.findById(req.params.wishListId)
+        .then((wishList) => {
+            if (!wishList) {
+                return res.status(404).json({
+                    message: 'Wish list not found'
+                })
+            }
+            WishList.deleteOne({
+                    _id: req.params.wishListId
+                })
+                .exec()
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Wish list deleted',
+                        request: {
+                            type: 'POST',
+                            url: 'http://localhost:3000/wishList',
+                            body: {
+                                customerId: 'Customer ID',
+                                productId: 'Product ID'
+                            }
+                        }
+                    })
+                }).catch((err) => {
+                    res.status(500).json({
+                        message: 'Wish list delete error',
+                        error: err
+                    })
                 });
         }).catch((err) => {
             console.log(err);

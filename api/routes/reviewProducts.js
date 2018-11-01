@@ -11,7 +11,6 @@ router.get('/', (req, res, next) => {
     ReviewProduct.find()
         .select('_id customer product ratingStar review dateReview')
         .populate('customer', '_id name')
-        .populate('product', '_id productName')
         .populate('ratingStar', '_id ratingStar description')
         .exec()
         .then((docs) => {
@@ -52,7 +51,6 @@ router.get('/:reviewProductId', (req, res, next) => {
     ReviewProduct.findById(id)
         .select('_id customer product ratingStar review dateReview')
         .populate('customer', '_id name')
-        .populate('product', '_id productName')
         .populate('ratingStar', '_id ratingStar description')
         .exec()
         .then(doc => {
@@ -100,7 +98,6 @@ router.get('/customer/:customerId', (req, res, next) => {
                 })
                 .select('_id customer product ratingStar review dateReview')
                 .populate('customer', '_id name')
-                .populate('product', '_id productName')
                 .populate('ratingStar', '_id ratingStar description')
                 .exec()
                 .then(docs => {
@@ -145,7 +142,6 @@ router.get('/product/:productId', (req, res, next) => {
                 })
                 .select('_id customer product ratingStar review dateReview')
                 .populate('customer', '_id name')
-                .populate('product', '_id productName')
                 .populate('ratingStar', '_id ratingStar description')
                 .exec()
                 .then(docs => {
@@ -184,7 +180,7 @@ router.post('/', (req, res, next) => {
                     message: 'Customer not found'
                 })
             }
-            Product.findById(req.body.productId)
+            Product.findById(req.body.product._id)
                 .then(product => {
                     if (!product) {
                         return res.status(404).json({
@@ -201,7 +197,7 @@ router.post('/', (req, res, next) => {
                             const reviewProduct = new ReviewProduct({
                                 _id: new mongoose.Types.ObjectId(),
                                 customer: req.body.customerId,
-                                product: req.body.productId,
+                                product: req.body.product,
                                 ratingStar: req.body.ratingStarId,
                                 review: req.body.review,
                                 dateReview: new Date()

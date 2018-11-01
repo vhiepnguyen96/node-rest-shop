@@ -43,7 +43,39 @@ router.get('/', (req, res, next) => {
         });
 });
 
-router.get('/:username', (req, res, next) => {
+router.get('/:accountId', (req, res, next) => {
+    Account.findById(req.params.accountId)
+        .select('_id username password role')
+        .populate('role', '_id roleName')
+        .exec()
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    message: 'Account not found'
+                })
+            }
+            res.status(200).json({
+                account: {
+                    _id: result._id,
+                    username: result.username,
+                    password: result.password,
+                    role: result.role
+                },
+                request: {
+                    type: 'GET',
+                    description: 'Get all account at: http://localhost:3000/accounts'
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/username/:username', (req, res, next) => {
     Account.findOne({
             username: req.params.username
         })
