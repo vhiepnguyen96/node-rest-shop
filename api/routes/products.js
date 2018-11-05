@@ -102,16 +102,13 @@ router.get('/onSale', (req, res, next) => {
         })
 });
 
-router.post('/findByName/page/:page', (req, res, next) => {
-    var page = req.params.page || 1
+router.post('/findByName', (req, res, next) => {
     Product.find({
             productName: {
                 '$regex': req.body.name,
                 '$options': 'i'
             }
         })
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName location')
@@ -120,18 +117,9 @@ router.post('/findByName/page/:page', (req, res, next) => {
         .then(docs => {
             console.log(docs);
             if (docs.length >= 0) {
-                Product.countDocuments({
-                    productName: {
-                        '$regex': req.body.name,
-                        '$options': 'i'
-                    }
-                })
-                .exec(function (err, count) {
-                    res.status(200).json({
-                        current: page,
-                        pages: Math.ceil(count / perPage),
-                        products: docs
-                    })
+                res.status(200).json({
+                    length: docs.length,
+                    products: docs
                 })
             } else {
                 res.status(404).json({
@@ -213,13 +201,10 @@ router.get('/getStore/:productId', (req, res, next) => {
         });
 });
 
-router.get('/store/:storeId/page/:page', (req, res, next) => {
-    var page = req.params.page || 1
+router.get('/store/:storeId', (req, res, next) => {
     Product.find({
             store: req.params.storeId
         })
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName location')
@@ -228,16 +213,10 @@ router.get('/store/:storeId/page/:page', (req, res, next) => {
         .then(docs => {
             console.log(docs);
             if (docs.length >= 0) {
-                Product.countDocuments({
-                        store: req.params.storeId
-                    })
-                    .exec(function (err, count) {
-                        res.status(200).json({
-                            current: page,
-                            pages: Math.ceil(count / perPage),
-                            products: docs
-                        })
-                    })
+                res.status(200).json({
+                    length: docs.length,
+                    products: docs
+                })
             } else {
                 res.status(404).json({
                     message: "No entries found"
@@ -252,13 +231,12 @@ router.get('/store/:storeId/page/:page', (req, res, next) => {
         });
 });
 
-router.get('/productType/:productTypeId/page/:page', (req, res, next) => {
-    var page = req.params.page || 1
+
+
+router.get('/productType/:productTypeId', (req, res, next) => {
     Product.find({
             productType: req.params.productTypeId
         })
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
         .select('_id productType store productName price quantity saleOff specifications overviews')
         .populate('productType', 'productTypeName')
         .populate('store', 'storeName location')
@@ -267,16 +245,10 @@ router.get('/productType/:productTypeId/page/:page', (req, res, next) => {
         .then(docs => {
             console.log(docs);
             if (docs.length >= 0) {
-                Product.countDocuments({
-                        productType: req.params.productTypeId
-                    })
-                    .exec(function (err, count) {
-                        res.status(200).json({
-                            current: page,
-                            pages: Math.ceil(count / perPage),
-                            products: docs
-                        })
-                    })
+                res.status(200).json({
+                    length: docs.length,
+                    products: docs
+                })
             } else {
                 res.status(404).json({
                     message: "No entries found"
@@ -411,6 +383,130 @@ router.get('/page/:page', function (req, res, next) {
             })
         })
 })
+
+
+router.post('/findByName/page/:page', (req, res, next) => {
+    var page = req.params.page || 1
+    Product.find({
+            productName: {
+                '$regex': req.body.name,
+                '$options': 'i'
+            }
+        })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                Product.countDocuments({
+                        productName: {
+                            '$regex': req.body.name,
+                            '$options': 'i'
+                        }
+                    })
+                    .exec(function (err, count) {
+                        res.status(200).json({
+                            current: page,
+                            pages: Math.ceil(count / perPage),
+                            products: docs
+                        })
+                    })
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/store/:storeId/page/:page', (req, res, next) => {
+    var page = req.params.page || 1
+    Product.find({
+            store: req.params.storeId
+        })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                Product.countDocuments({
+                        store: req.params.storeId
+                    })
+                    .exec(function (err, count) {
+                        res.status(200).json({
+                            current: page,
+                            pages: Math.ceil(count / perPage),
+                            products: docs
+                        })
+                    })
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
+router.get('/productType/:productTypeId/page/:page', (req, res, next) => {
+    var page = req.params.page || 1
+    Product.find({
+            productType: req.params.productTypeId
+        })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            if (docs.length >= 0) {
+                Product.countDocuments({
+                        productType: req.params.productTypeId
+                    })
+                    .exec(function (err, count) {
+                        res.status(200).json({
+                            current: page,
+                            pages: Math.ceil(count / perPage),
+                            products: docs
+                        })
+                    })
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
 
 router.post('/', (req, res, next) => {
     ProductType.findById(req.body.productTypeId)
