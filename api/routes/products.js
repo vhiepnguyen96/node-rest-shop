@@ -118,7 +118,7 @@ router.post('/findByName', (req, res, next) => {
             console.log(docs);
             if (docs.length >= 0) {
                 res.status(200).json({
-                    length: docs.length,
+                    count: docs.length,
                     products: docs
                 })
             } else {
@@ -214,7 +214,7 @@ router.get('/store/:storeId', (req, res, next) => {
             console.log(docs);
             if (docs.length >= 0) {
                 res.status(200).json({
-                    length: docs.length,
+                    count: docs.length,
                     products: docs
                 })
             } else {
