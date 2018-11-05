@@ -22,7 +22,7 @@ router.get('/', (req, res, next) => {
                         role: doc.role,
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/accounts/' + doc.username
+                            url: 'http://localhost:3000/accounts/' + doc._id
                         }
                     }
                 })
@@ -188,11 +188,9 @@ router.post('/', (req, res, next) => {
         })
 });
 
-router.patch('/:username', (req, res, next) => {
-    const username = req.params.username;
-    Account.findOne({
-            username: username
-        })
+router.patch('/:accountId', (req, res, next) => {
+    const id = req.params.accountId;
+    Account.findById(id)
         .then((account) => {
             if (!account) {
                 return res.status(404).json({
@@ -204,7 +202,7 @@ router.patch('/:username', (req, res, next) => {
                 updateOps[ops.propName] = ops.value;
             }
             Account.updateOne({
-                    username: username
+                    _id: id
                 }, {
                     $set: updateOps
                 })

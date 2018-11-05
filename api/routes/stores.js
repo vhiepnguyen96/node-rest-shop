@@ -7,7 +7,7 @@ const Account = require('../models/account');
 
 router.get('/', (req, res, next) => {
     Store.find()
-        .select('_id account storeName location phoneNumber createdDate categories')
+        .select('_id account storeName location phoneNumber email createdDate categories')
         .populate('account', '_id username')
         .populate('categories.category', 'categoryName')
         .exec()
@@ -21,12 +21,9 @@ router.get('/', (req, res, next) => {
                         storeName: doc.storeName,
                         location: doc.location,
                         phoneNumber: doc.phoneNumber,
+                        email: doc.email,
                         createdDate: doc.createdDate,
-                        categories: doc.categories,
-                        request: {
-                            type: 'GET',
-                            url: 'http://localhost:3000/stores/' + doc._id
-                        }
+                        categories: doc.categories
                     }
                 })
             }
@@ -49,7 +46,7 @@ router.get('/', (req, res, next) => {
 router.get('/:storeId', (req, res, next) => {
     const id = req.params.storeId;
     Store.findById(id)
-        .select('_id account storeName location phoneNumber createdDate categories')
+        .select('_id account storeName location phoneNumber email createdDate categories')
         .populate('account', '_id username')
         .populate('categories.category', 'categoryName')
         .exec()
@@ -63,6 +60,7 @@ router.get('/:storeId', (req, res, next) => {
                         storeName: doc.storeName,
                         location: doc.location,
                         phoneNumber: doc.phoneNumber,
+                        email: doc.email,
                         createdDate: doc.createdDate,
                         categories: doc.categories,
                     }
@@ -86,7 +84,7 @@ router.get('/account/:accountId', (req, res, next) => {
     Store.findOne({
             account: id
         })
-        .select('_id account storeName location phoneNumber createdDate categories')
+        .select('_id account storeName location phoneNumber email createdDate categories')
         .populate('account', 'username')
         .populate('categories.category', 'categoryName')
         .exec()
@@ -100,6 +98,7 @@ router.get('/account/:accountId', (req, res, next) => {
                         storeName: doc.storeName,
                         location: doc.location,
                         phoneNumber: doc.phoneNumber,
+                        email: doc.email,
                         createdDate: doc.createdDate,
                         categories: doc.categories,
                     }
@@ -132,6 +131,7 @@ router.post('/', (req, res, next) => {
                 storeName: req.body.storeName,
                 location: req.body.location,
                 phoneNumber: req.body.phoneNumber,
+                email: req.body.email,
                 createdDate: new Date(),
                 categories: req.body.categories
             })
@@ -147,6 +147,7 @@ router.post('/', (req, res, next) => {
                     storeName: result.storeName,
                     location: result.location,
                     phoneNumber: result.phoneNumber,
+                    email: result.email,
                     createdDate: result.createdDate,
                     categories: req.body.categories
                 },
@@ -229,6 +230,7 @@ router.delete('/:storeId', (req, res, next) => {
                                 storeName: 'String',
                                 location: 'String',
                                 phoneNumber: 'String',
+                                email: 'String',
                                 categories: 'Array Category'
                             }
                         }

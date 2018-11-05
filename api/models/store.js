@@ -19,6 +19,10 @@ const storeSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     createdDate: {
         type: Date,
         required: true

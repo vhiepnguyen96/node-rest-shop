@@ -87,7 +87,7 @@ router.get('/getByState/:oderItemStateId', (req, res, next) => {
 router.get('/productPurchase', (req, res, next) => {
     OrderItem.aggregate([{
         $group: {
-            _id: '$product',
+            '_id': '$product._id',
             count: {
                 $sum: 1
             }

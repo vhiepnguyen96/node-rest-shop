@@ -138,7 +138,7 @@ router.get('/product/:productId', (req, res, next) => {
                 })
             }
             ReviewProduct.find({
-                    product: id
+                    'product._id': id
                 })
                 .select('_id customer product ratingStar review dateReview')
                 .populate('customer', '_id name')

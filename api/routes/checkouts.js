@@ -33,6 +33,33 @@ router.post('/charge', (req, res, next) => {
         });
 });
 
+router.post('/', (req, res, next) => {
+    console.log("Body: " + req.body.source);
+    stripe.customers.create({
+            email: req.body.email,
+            source: req.body.source
+        })
+        .then(customer => {
+            stripe.charges.create({
+                    amount: req.body.amount,
+                    currency: 'usd',
+                    customer: customer.id,
+                    description: "Payment for order #" + req.body.order
+                })
+                .then(charge => {
+                    console.log("Purchase Success:", charge);
+                    return res.status(200).json(charge)
+                })
+                .catch(err => {
+                    console.log("Purchase Error:", err);
+                    return res.status(500).json(err);
+                });
+        }).catch(err => {
+            console.log("Create Customer Error:", err);
+            return res.status(500).json(err);
+        });
+});
+
 module.exports = router;
 
 // stripe.customers.retrieve({
