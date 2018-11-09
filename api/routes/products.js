@@ -8,7 +8,7 @@ const Store = require('../models/store');
 const SaleOff = require('../models/saleOff');
 const ProductImage = require('../models/productImage');
 
-var perPage = 2;
+var perPage = 6;
 
 router.get('/', (req, res, next) => {
     Product.find()

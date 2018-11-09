@@ -17,6 +17,7 @@ router.get('/', (req, res, next) => {
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
+        .sort('-purchaseDate')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -67,7 +68,7 @@ router.get('/:orderId', (req, res, next) => {
             console.log(doc);
             if (doc) {
                 res.status(200).json({
-                    product: {
+                    order: {
                         _id: doc._id,
                         customer: doc.customer,
                         deliveryAddress: doc.deliveryAddress,
@@ -106,6 +107,7 @@ router.get('/customer/:customerId', (req, res, next) => {
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
+        .sort('-purchaseDate')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -153,6 +155,7 @@ router.get('/getByState/:orderStateId', (req, res, next) => {
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
+        .sort('-purchaseDate')
         .exec()
         .then(docs => {
             console.log(docs);
@@ -201,6 +204,7 @@ router.post('/getByState', (req, res, next) => {
         .populate('deliveryPrice', 'transportFee')
         .populate('paymentMethod', 'paymentMethodName')
         .populate('orderState', 'orderStateName')
+        .sort('-purchaseDate')
         .exec()
         .then(docs => {
             console.log(docs);
