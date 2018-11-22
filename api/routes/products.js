@@ -8,7 +8,7 @@ const Store = require('../models/store');
 const SaleOff = require('../models/saleOff');
 const ProductImage = require('../models/productImage');
 
-var perPage = 6;
+var perPage = 10;
 
 router.get('/', (req, res, next) => {
     Product.find()
@@ -93,6 +93,42 @@ router.get('/onSale', (req, res, next) => {
                     message: "No entries found"
                 })
             }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
+});
+
+router.get('/onSale/:page', (req, res, next) => {
+    var page = req.params.page || 1
+    Product.find({
+            saleOff: {
+                $ne: null
+            }
+        })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(products => {
+            console.log(products);
+            Product.countDocuments({
+                saleOff: {
+                    $ne: null
+                }
+            }).exec(function (err, count) {
+                res.status(200).json({
+                    current: page,
+                    pages: Math.ceil(count / perPage),
+                    products: products
+                })
+            })
         })
         .catch(err => {
             console.log(err);
@@ -369,6 +405,38 @@ router.get('/page/:page', function (req, res, next) {
         .exec()
         .then(products => {
             Product.countDocuments().exec(function (err, count) {
+                res.status(200).json({
+                    current: page,
+                    pages: Math.ceil(count / perPage),
+                    products: products
+                })
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        })
+})
+
+router.post('/filter', function (req, res, next) {
+    var page = req.body.page || 1
+    Product
+        .find({
+            productType: req.body.productTypeId
+        })
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .select('_id productType store productName price quantity saleOff specifications overviews')
+        .populate('productType', 'productTypeName')
+        .populate('store', 'storeName location')
+        .populate('saleOff', 'discount dateStart dateEnd')
+        .exec()
+        .then(products => {
+            Product.countDocuments({
+                productType: req.body.productTypeId
+            }).exec(function (err, count) {
                 res.status(200).json({
                     current: page,
                     pages: Math.ceil(count / perPage),

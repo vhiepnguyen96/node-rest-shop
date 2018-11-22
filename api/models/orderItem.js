@@ -20,6 +20,15 @@ const orderItemSchema = mongoose.Schema({
             type: Number,
             required: true
         },
+        store: {
+            _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Store'
+            },
+            storeName: {
+                type: String
+            }    
+        },
         imageURL: {
             type: String,
             required: true
