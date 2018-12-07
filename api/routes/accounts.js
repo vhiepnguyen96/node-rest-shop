@@ -212,10 +212,11 @@ router.patch('/:accountId', (req, res, next) => {
                         message: 'Account updated',
                         request: {
                             type: 'GET',
-                            url: 'http://localhost:3000/accounts/' + username
+                            url: 'http://localhost:3000/accounts/' + id
                         }
                     }]);
                 }).catch((err) => {
+                    console.log(err);
                     res.status(500).json([{
                         message: 'Account update error',
                         error: err
