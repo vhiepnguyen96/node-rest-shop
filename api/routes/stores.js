@@ -117,6 +117,32 @@ router.get('/account/:accountId', (req, res, next) => {
         });
 });
 
+router.post('/findByName', (req, res, next) => {
+    Store.findOne({
+            storeName:  req.body.name
+        })
+        .select('_id account storeName location phoneNumber email createdDate categories')
+        .populate('account', 'username')
+        .populate('categories.category', 'categoryName')
+        .exec()
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json(doc);
+            } else {
+                res.status(404).json({
+                    message: "No entries found"
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            })
+        });
+});
+
 router.post('/', (req, res, next) => {
     Account.findById(req.body.accountId)
         .then(account => {
