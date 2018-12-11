@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
                 count: docs.length,
                 stores: docs.map(doc => {
                     return {
-                        _id: doc._id,   
+                        _id: doc._id,
                         account: doc.account,
                         storeName: doc.storeName,
                         location: doc.location,
@@ -119,7 +119,7 @@ router.get('/account/:accountId', (req, res, next) => {
 
 router.post('/findByName', (req, res, next) => {
     Store.findOne({
-            storeName:  req.body.name
+            storeName: req.body.name
         })
         .select('_id account storeName location phoneNumber email createdDate categories')
         .populate('account', 'username')
@@ -127,13 +127,14 @@ router.post('/findByName', (req, res, next) => {
         .exec()
         .then(doc => {
             console.log(doc);
-            if (doc) {
-                res.status(200).json(doc);
-            } else {
-                res.status(404).json({
-                    message: "No entries found"
+            if (!doc) {
+                return res.status(404).json({
+                    message: 'Store not found'
                 })
-            }
+            } 
+            res.status(200).json({
+                store: doc
+            });
         })
         .catch(err => {
             console.log(err);
