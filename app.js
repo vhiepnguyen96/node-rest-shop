@@ -3,7 +3,6 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const MongoClient = require('mongoose')
 
 const accountRoutes = require('./api/routes/accounts');
 const categoryRoutes = require('./api/routes/categories');
@@ -34,7 +33,7 @@ const wishListRoutes = require('./api/routes/wishList');
 const testRoutes = require('./api/routes/templates');
 
 mongoose.connect(
-    "mongodb+srv://node-shop:" + process.env.MONGO_ATLAS_PW + "@node-rest-shop-hj5xt.mongodb.net/test?retryWrites=true", {
+    "mongodb+srv://cyberzone:" + process.env.MONGO_ATLAS_PW + "@node-rest-shop-hj5xt.mongodb.net/test?retryWrites=true", {
         useNewUrlParser: true
     }
 )
