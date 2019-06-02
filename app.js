@@ -33,7 +33,7 @@ const wishListRoutes = require('./api/routes/wishList');
 const testRoutes = require('./api/routes/templates');
 
 mongoose.connect(
-    "mongodb+srv://cyberzone:" + process.env.MONGO_ATLAS_PW + "@node-rest-shop-hj5xt.mongodb.net/test?retryWrites=true", {
+    "mongodb+srv://cyberzone:cyberzone@node-rest-shop-hj5xt.mongodb.net/test?retryWrites=true&w=majority", {
         useNewUrlParser: true
     }
 )
